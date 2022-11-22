@@ -1,26 +1,24 @@
 # Frontend
 
-T3-Stack
+T3-Stack app
 
 ## How do I run this ?
 
 ```bash
-1.git clone
-2.cd frontend
-3.npm i
-4. npm run dev
+npm i
+npm run dev
 
 ```
 
 # Backend
 
-Django
+Django app
 
 ## How do I run this ?
 
-```py
+```bash
 python -m venv .venv
-
+python -m pip install django~=4.0.0 (if is not installed)
 django-admin startproject django_project .
 
 ```
