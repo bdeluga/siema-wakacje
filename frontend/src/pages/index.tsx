@@ -1,5 +1,5 @@
-import { type NextPage } from "next";
-import Head from "next/head";
+import { type NextPage } from 'next'
+import Head from 'next/head'
 
 const Home: NextPage = () => {
   return (
@@ -12,7 +12,7 @@ const Home: NextPage = () => {
         <div className="text-5xl">Szukasz [tutaj piszacy sie tekst] ? </div>
         <div className="mt-10 flex  w-96 items-center justify-evenly">
           <input
-            type={"text"}
+            type={'text'}
             className="h-10 border bg-transparent pl-2 text-lg"
           />
           <button className=" flex h-12 items-center justify-center rounded-md bg-[#bfccf5] px-10 text-xl text-gray-800">
@@ -21,7 +21,7 @@ const Home: NextPage = () => {
         </div>
       </main>
     </>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
