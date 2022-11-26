@@ -7,7 +7,7 @@ const Typer = () => {
     "restauracji?",
     "trasy rowerowej?",
     "zabytków w okolicy?",
-    "klubów?",
+    "klubu?",
     "obiektu sportowego?",
     "parku?",
   ]);
