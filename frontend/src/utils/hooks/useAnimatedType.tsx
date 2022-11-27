@@ -33,6 +33,5 @@ export const useAnimatedType = (texts: string[]) => {
     }
   }, [typedText, texts, phase, listIndex]);
 
-  console.log(typedText);
   return { typedText };
 };
