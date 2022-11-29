@@ -11,6 +11,9 @@ module.exports = {
       animation: {
         blink: "blink 0.85s infinite",
       },
+      backgroundImage: {
+        view: "url('/background.svg')",
+      },
     },
   },
   plugins: [],
