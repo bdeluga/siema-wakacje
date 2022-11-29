@@ -14,7 +14,7 @@ const Typer = () => {
   return (
     <>
       <span>{typedText}</span>
-      <span className=" animate-blink border-l-4 border-gray-100" />
+      <span className=" animate-blink border-l-4 border-slate-800" />
     </>
   );
 };
