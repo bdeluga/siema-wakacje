@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Typer from "../components/Typer";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -35,12 +35,12 @@ const Home: NextPage = () => {
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
+  const router = useRouter();
 
   useEffect(() => {
     if (debouncedValue) fetch(`http://localhost:8000/city/${debouncedValue}`);
-  }, [fetch, debouncedValue]);
-
-  const router = useRouter();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedValue]);
 
   return (
     <>
@@ -61,7 +61,9 @@ const Home: NextPage = () => {
             <input
               type={"text"}
               className={` h-14 w-96 rounded-md  border-gray-800 bg-slate-100  pl-2 pr-24 text-xl text-gray-800 duration-500 ${
-                error && "rounded-md border-2 border-l-[1rem] border-red-500"
+                error &&
+                inputData.length > 0 &&
+                "rounded-md border-2 border-l-[1rem] border-red-500"
               }`}
               placeholder="Wpisz miasto..."
               value={inputData}
