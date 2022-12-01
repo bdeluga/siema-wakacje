@@ -1,36 +1,47 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Typer from "../components/Typer";
 import { useRouter } from "next/router";
-import type { Error } from "../types/types";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch, faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { useFetchCities } from "../utils/hooks/useFetchCities";
+import {
+  faCircleNotch,
+  faExclamationCircle,
+  faSpinner,
+} from "@fortawesome/free-solid-svg-icons";
+import { useFetch as useFetch } from "../utils/hooks/useFetch";
+import { useDebounceValue } from "../utils/hooks/useDebouncedValue";
 
 const Home: NextPage = () => {
   const [isFetchingCity, setIsFetchingCity] = useState<boolean>(false);
-  const { fetch, cities, isFetching } = useFetchCities();
+
+  const { fetch, data, isFetching, error } = useFetch();
 
   const handleSearch = async () => {
-    if (!inputData) return setFetchError({ msg: "Wpisz nazwę miasta." });
-
     setIsFetchingCity(true);
     axios
       .get(`http://localhost:8000/${inputData}`)
       .then(() => {
         router.push(inputData);
       })
-      .catch(() => {
-        setFetchError({ msg: "Nie mogliśmy znaleźć tego miasta." });
-      })
       .finally(() => setIsFetchingCity(false));
   };
 
   const [inputData, setInput] = useState("");
+
+  const { debouncedValue } = useDebounceValue(inputData, 350);
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
+
+  useEffect(() => {
+    if (debouncedValue) fetch(`http://localhost:8000/city/${debouncedValue}`);
+  }, [fetch, debouncedValue]);
+
   const router = useRouter();
-  const [fetchError, setFetchError] = useState<Error>();
+
   return (
     <>
       <Head>
@@ -50,24 +61,17 @@ const Home: NextPage = () => {
             <input
               type={"text"}
               className={` h-14 w-96 rounded-md  border-gray-800 bg-slate-100  pl-2 pr-24 text-xl text-gray-800 duration-500 ${
-                fetchError?.msg &&
-                "rounded-md border-2 border-l-[1rem] border-red-500"
+                error && "rounded-md border-2 border-l-[1rem] border-red-500"
               }`}
               placeholder="Wpisz miasto..."
               value={inputData}
-              onChange={(e) => {
-                if (fetchError?.msg) {
-                  setFetchError({ msg: "" });
-                }
-                setInput(e.target.value);
-
-                fetch(`http://localhost:8000/city/${e.target.value}`);
-              }}
+              onChange={handleInput}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
             <button
-              className=" absolute top-2 right-2 flex h-10 w-20 items-center justify-center  rounded-md border-2 border-slate-700 text-xl text-gray-800 duration-300  hover:bg-slate-700 hover:text-gray-100"
+              className=" absolute top-2 right-2 flex h-10 w-20  items-center justify-center rounded-md  border-2 border-slate-700 text-xl text-gray-800 duration-300 hover:bg-slate-700  hover:text-gray-100 disabled:pointer-events-none"
               onClick={handleSearch}
+              disabled={inputData.length < 1}
             >
               {isFetchingCity ? (
                 <FontAwesomeIcon icon={faSpinner} className="fa-spin" />
@@ -83,10 +87,18 @@ const Home: NextPage = () => {
                     className="fa-spin absolute   text-4xl"
                   />
                 )}
+                {error && (
+                  <div className="flex flex-col text-red-500">
+                    <FontAwesomeIcon
+                      icon={faExclamationCircle}
+                      className="text-4xl"
+                    />
+                    <p className="mt-2">{error.msg}</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
-          <span className="ml-4 font-bold text-red-400">{fetchError?.msg}</span>
         </div>
       </main>
     </>
