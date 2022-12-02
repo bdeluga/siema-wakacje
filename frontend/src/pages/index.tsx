@@ -11,12 +11,19 @@ import {
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { useFetch as useFetch } from "../utils/hooks/useFetch";
-import { useDebounceValue } from "../utils/hooks/useDebouncedValue";
+import _ from "lodash";
 
 const Home: NextPage = () => {
   const [isFetchingCity, setIsFetchingCity] = useState<boolean>(false);
 
-  const { fetch, data, isFetching, error } = useFetch();
+  const { fetch, isFetching, error } = useFetch();
+
+  const onChange = (value: string) => {
+    fetch(`http://localhost:8000/city/${value}`);
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounce = useCallback(_.debounce(onChange, 550), []);
 
   const handleSearch = async () => {
     setIsFetchingCity(true);
@@ -30,17 +37,7 @@ const Home: NextPage = () => {
 
   const [inputData, setInput] = useState("");
 
-  const { debouncedValue } = useDebounceValue(inputData, 350);
-
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
-  };
   const router = useRouter();
-
-  useEffect(() => {
-    if (debouncedValue) fetch(`http://localhost:8000/city/${debouncedValue}`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedValue]);
 
   return (
     <>
@@ -61,13 +58,10 @@ const Home: NextPage = () => {
             <input
               type={"text"}
               className={` h-14 w-96 rounded-md  border-gray-800 bg-slate-100  pl-2 pr-24 text-xl text-gray-800 duration-500 ${
-                error &&
-                inputData.length > 0 &&
-                "rounded-md border-2 border-l-[1rem] border-red-500"
+                error && "rounded-md border-2 border-l-[1rem] border-red-500"
               }`}
               placeholder="Wpisz miasto..."
-              value={inputData}
-              onChange={handleInput}
+              onChange={(e) => debounce(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
             <button
