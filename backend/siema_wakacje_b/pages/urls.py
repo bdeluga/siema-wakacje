@@ -2,6 +2,7 @@
 from django.urls import path, re_path
 from .views import homePageView
 from .views import cityPageView
+from .views import cityQueryView
 from django.shortcuts import render
 
 # Create your views here.
@@ -10,5 +11,6 @@ from django.http import HttpResponse
 
 urlpatterns = [
     path('', homePageView, name="home"),
-    re_path(r'^', cityPageView ),
+    re_path("city/", cityQueryView),
+    re_path(r'^', cityPageView),
 ]

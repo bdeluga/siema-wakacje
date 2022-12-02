@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from pages.views import cityQueryView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # change
+    path('city/', cityQueryView),
     path('', include('pages.urls')),
 ]
