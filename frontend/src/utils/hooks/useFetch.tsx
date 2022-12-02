@@ -7,7 +7,7 @@ export const useFetch = () => {
   const [error, setError] = useState<Error>();
 
   const fetch = (url: string) => {
-    if (error) setError(undefined);
+    setError(undefined);
     setIsFetching(true);
     axios
       .get(url)

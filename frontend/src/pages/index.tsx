@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Typer from "../components/Typer";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -15,7 +15,7 @@ import _ from "lodash";
 
 const Home: NextPage = () => {
   const [isFetchingCity, setIsFetchingCity] = useState<boolean>(false);
-
+  const inputRef = useRef<HTMLInputElement>(null);
   const { fetch, isFetching, error } = useFetch();
 
   const onChange = (value: string) => {
@@ -56,6 +56,7 @@ const Home: NextPage = () => {
         <div className=" w-full pl-32">
           <div className="relative mt-4 w-min">
             <input
+              ref={inputRef}
               type={"text"}
               className={` h-14 w-96 rounded-md  border-gray-800 bg-slate-100  pl-2 pr-24 text-xl text-gray-800 duration-500 ${
                 error && "rounded-md border-2 border-l-[1rem] border-red-500"
@@ -75,7 +76,7 @@ const Home: NextPage = () => {
                 "Szukaj"
               )}
             </button>
-            {inputData && (
+            {inputRef.current && inputRef.current.value && (
               <div className="scrollbar relative mt-2 flex min-h-[15rem]  w-96 items-center justify-center overflow-y-scroll rounded-md bg-slate-100 p-2">
                 {isFetching && (
                   <FontAwesomeIcon
