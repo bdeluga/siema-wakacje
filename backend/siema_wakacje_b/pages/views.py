@@ -4,11 +4,13 @@ from django.http import HttpResponse
 import csv
 import os
 
-def homePageView(request):
-    return HttpResponse("hello world")
-
 def cityPageView(request):
 
+    # empty endpoint
+    if str(request.path[1:]) == '':
+        return HttpResponse(status=200)
+    
+    
     # absolute path cuz data is in .csv outside the project
 
     worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
@@ -22,15 +24,25 @@ def cityPageView(request):
 
     with open(worldCities, encoding='utf8') as data:
         for row in data:
-            if (row.split(',')[0])[1:-1] == str(request.path)[1:]:
+            if ((row.split(',')[0])[1:-1]).upper() == (str(request.path)[1:]).upper():
                 return HttpResponse(status=200)
     return HttpResponse(status=404)
 
-# nie ruszać trzyma sie na spinaczu
 
 
 def cityQueryView(request):
-    if (str(request.path)[6:] == ''):
-        return HttpResponse(status=200)
-
-    return HttpResponse(status=404)
+    # nasza baza 40k miast
+    worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
+    # sciezka (upper liwiduje mniejsze wieksze znaki)
+    path = str(request.path)[6:].upper()
+    # lista na miasta
+    cities = []
+    
+    # znajduje miasta ktore sa na jakas litere
+    # jak to dziala to nie czas na tlumaczenie
+    with open(worldCities, encoding='utf8') as data:
+        for row in data:
+            if (((row.split(',')[0])[1:-1]).upper()).startswith(path):
+                cities.append((row.split(',')[0])[1:-1])
+    return HttpResponse(f'{cities} ')
+    

@@ -1,16 +1,17 @@
 # pages/urls.py
 from django.urls import path, re_path
-from .views import homePageView
-from .views import cityPageView
-from .views import cityQueryView
+from . import views
 from django.shortcuts import render
 
-# Create your views here.
-# pages/views.py
-from django.http import HttpResponse
 
+# dobrze chlopcy
+# fajnie jakbyscie tu dawali same wyrazenia regularne
+# bo to wyglada tak ze
+# urls te glowne sa stworzone tam nic nie trzeba ruszac
+# tutaj dajecie to co bedzie po /
+# przyklad: siemawakacje.pl/city/...
+# i tylko tu cos robicie
 urlpatterns = [
-    path('', homePageView, name="home"),
-    re_path("city/", cityQueryView),
-    re_path(r'^', cityPageView),
+    re_path(r'city/*', views.cityQueryView),
+    re_path(r'^', views.cityPageView)
 ]
