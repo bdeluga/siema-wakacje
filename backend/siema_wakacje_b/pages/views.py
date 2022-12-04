@@ -41,19 +41,22 @@ def cityQueryView(request):
     
     # znajduje miasta ktore sa na jakas litere
     # jak to dziala to nie czas na tlumaczenie
-    count = 0
-    with open(worldCities, encoding='utf8') as data:
-        for row in data:
-            if (((row.split(',')[0])[1:-1]).upper()).startswith(path):
-                city = {}
-                city['name'] = (row.split(',')[0])[1:-1]
-                city['lat'] = (row.split(',')[2])[1:-1]
-                city['lng'] = (row.split(',')[3])[1:-1]
-                city['country'] =  (row.split(',')[4])[1:-1]
-                city['iso'] = (row.split(',')[6])[1:-1]
-                cities['data'].append(city)
-                count = count + 1
-    inf = {}
-    inf['count'] = count
-    cities['metainf'].append(inf)    
-    return JsonResponse(cities)
+    if path == '':
+        return HttpResponse(status=200)
+    else:
+        count = 0
+        with open(worldCities, encoding='utf8') as data:
+            for row in data:
+                if (((row.split(',')[0])[1:-1]).upper()).startswith(path):
+                    city = {}
+                    city['name'] = (row.split(',')[0])[1:-1]
+                    city['lat'] = (row.split(',')[2])[1:-1]
+                    city['lng'] = (row.split(',')[3])[1:-1]
+                    city['country'] =  (row.split(',')[4])[1:-1]
+                    city['iso'] = (row.split(',')[6])[1:-1]
+                    cities['data'].append(city)
+                    count = count + 1
+        inf = {}
+        inf['count'] = count
+        cities['metainf'].append(inf)   
+        return JsonResponse(cities)
