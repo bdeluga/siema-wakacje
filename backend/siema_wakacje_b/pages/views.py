@@ -1,14 +1,17 @@
 from django.shortcuts import render
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import csv
 import os
-
-def homePageView(request):
-    return HttpResponse("hello world")
+import json
 
 def cityPageView(request):
 
+    # empty endpoint
+    if str(request.path[1:]) == '':
+        return HttpResponse(status=200)
+    
+    
     # absolute path cuz data is in .csv outside the project
 
     worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
@@ -22,15 +25,35 @@ def cityPageView(request):
 
     with open(worldCities, encoding='utf8') as data:
         for row in data:
-            if (row.split(',')[0])[1:-1] == str(request.path)[1:]:
+            if ((row.split(',')[0])[1:-1]).upper() == (str(request.path)[1:]).upper():
                 return HttpResponse(status=200)
     return HttpResponse(status=404)
 
-# nie ruszać trzyma sie na spinaczu
 
 
 def cityQueryView(request):
-    if (str(request.path)[6:] == ''):
-        return HttpResponse(status=200)
-
-    return HttpResponse(status=404)
+    # nasza baza 40k miast
+    worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
+    # sciezka (upper liwiduje mniejsze wieksze znaki)
+    path = str(request.path)[6:].upper()
+    # lista na miasta
+    cities = {'metainf':[], 'data':[]}
+    
+    # znajduje miasta ktore sa na jakas litere
+    # jak to dziala to nie czas na tlumaczenie
+    count = 0
+    with open(worldCities, encoding='utf8') as data:
+        for row in data:
+            if (((row.split(',')[0])[1:-1]).upper()).startswith(path):
+                city = {}
+                city['name'] = (row.split(',')[0])[1:-1]
+                city['lat'] = (row.split(',')[2])[1:-1]
+                city['lng'] = (row.split(',')[3])[1:-1]
+                city['country'] =  (row.split(',')[4])[1:-1]
+                city['iso'] = (row.split(',')[6])[1:-1]
+                cities['data'].append(city)
+                count = count + 1
+    inf = {}
+    inf['count'] = count
+    cities['metainf'].append(inf)    
+    return JsonResponse(cities)
