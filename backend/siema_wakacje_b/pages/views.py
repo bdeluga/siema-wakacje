@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import csv
 import os
+import json
 
 def cityPageView(request):
 
@@ -36,13 +37,23 @@ def cityQueryView(request):
     # sciezka (upper liwiduje mniejsze wieksze znaki)
     path = str(request.path)[6:].upper()
     # lista na miasta
-    cities = []
+    cities = {'metainf':[], 'data':[]}
     
     # znajduje miasta ktore sa na jakas litere
     # jak to dziala to nie czas na tlumaczenie
+    count = 0
     with open(worldCities, encoding='utf8') as data:
         for row in data:
             if (((row.split(',')[0])[1:-1]).upper()).startswith(path):
-                cities.append((row.split(',')[0])[1:-1])
-    return HttpResponse(f'{cities} ')
+                city = {}
+                city['name'] = (row.split(',')[0])[1:-1]
+                city['lat'] = (row.split(',')[2])[1:-1]
+                city['lng'] = (row.split(',')[3])[1:-1]
+                city['country'] =  (row.split(',')[4])[1:-1]
+                cities['data'].append(city)
+                count = count + 1
+    inf = {}
+    inf['count'] = count
+    cities['metainf'].append(inf)    
+    return JsonResponse(cities)
     
