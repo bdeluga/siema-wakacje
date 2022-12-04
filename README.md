@@ -19,6 +19,7 @@ Django app
 ```bash
 python -m pip install django~=4.0.0 (if is not installed)
 pip install django-cors-headers
+pip install django-environ
 python manage.py runserver
 
 ```
