@@ -57,4 +57,3 @@ def cityQueryView(request):
     inf['count'] = count
     cities['metainf'].append(inf)    
     return JsonResponse(cities)
-    
