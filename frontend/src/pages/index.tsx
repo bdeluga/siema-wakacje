@@ -22,6 +22,7 @@ const Home: NextPage = () => {
     cities.fetch(`http://localhost:8000/city/${value}`);
   };
 
+  console.log(cities.data);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(_.debounce(onChange, 550), []);
 
