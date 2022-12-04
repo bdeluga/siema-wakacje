@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Typer from "../components/Typer";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -16,26 +16,28 @@ import _ from "lodash";
 const Home: NextPage = () => {
   const [isFetchingCity, setIsFetchingCity] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { fetch, isFetching, error } = useFetch();
+  const cities = useFetch();
 
   const onChange = (value: string) => {
-    fetch(`http://localhost:8000/city/${value}`);
+    cities.fetch(`http://localhost:8000/city/${value}`);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(_.debounce(onChange, 550), []);
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     setIsFetchingCity(true);
     axios
-      .get(`http://localhost:8000/${inputData}`)
+      .get(`http://localhost:8000/${inputRef.current?.value}`)
       .then(() => {
-        router.push(inputData);
+        router.push("/city/" + inputRef.current?.value ?? "");
       })
+      .catch((err) => console.error(err))
       .finally(() => setIsFetchingCity(false));
   };
 
-  const [inputData, setInput] = useState("");
+  // TODO: Disable button on cities fetch
+  // TODO: change fetch to useFetch on both
 
   const router = useRouter();
 
@@ -59,7 +61,8 @@ const Home: NextPage = () => {
               ref={inputRef}
               type={"text"}
               className={` h-14 w-96 rounded-md  border-gray-800 bg-slate-100  pl-2 pr-24 text-xl text-gray-800 duration-500 ${
-                error && "rounded-md border-2 border-l-[1rem] border-red-500"
+                cities.error &&
+                "rounded-md border-2 border-l-[1rem] border-red-500"
               }`}
               placeholder="Wpisz miasto..."
               onChange={(e) => debounce(e.target.value)}
@@ -68,7 +71,7 @@ const Home: NextPage = () => {
             <button
               className=" absolute top-2 right-2 flex h-10 w-20  items-center justify-center rounded-md  border-2 border-slate-700 text-xl text-gray-800 duration-300 hover:bg-slate-700  hover:text-gray-100 disabled:pointer-events-none"
               onClick={handleSearch}
-              disabled={inputData.length < 1}
+              disabled={cities.isFetching}
             >
               {isFetchingCity ? (
                 <FontAwesomeIcon icon={faSpinner} className="fa-spin" />
@@ -78,19 +81,19 @@ const Home: NextPage = () => {
             </button>
             {inputRef.current && inputRef.current.value && (
               <div className="scrollbar relative mt-2 flex min-h-[15rem]  w-96 items-center justify-center overflow-y-scroll rounded-md bg-slate-100 p-2">
-                {isFetching && (
+                {cities.isFetching && (
                   <FontAwesomeIcon
                     icon={faCircleNotch}
                     className="fa-spin absolute   text-4xl"
                   />
                 )}
-                {error && (
+                {cities.error && (
                   <div className="flex flex-col text-red-500">
                     <FontAwesomeIcon
                       icon={faExclamationCircle}
                       className="text-4xl"
                     />
-                    <p className="mt-2">{error.msg}</p>
+                    <p className="mt-2">{cities.error.msg}</p>
                   </div>
                 )}
               </div>
