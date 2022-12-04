@@ -17,8 +17,7 @@ Django app
 ## How do I run this ?
 
 ```bash
-python -m venv .venv
 python -m pip install django~=4.0.0 (if is not installed)
-django-admin startproject django_project .
+python manage.py runserver
 
 ```
