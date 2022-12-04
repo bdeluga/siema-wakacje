@@ -50,6 +50,7 @@ def cityQueryView(request):
                 city['lat'] = (row.split(',')[2])[1:-1]
                 city['lng'] = (row.split(',')[3])[1:-1]
                 city['country'] =  (row.split(',')[4])[1:-1]
+                city['iso'] = (row.split(',')[6])[1:-1]
                 cities['data'].append(city)
                 count = count + 1
     inf = {}
