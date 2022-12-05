@@ -9,8 +9,9 @@ export const useFetch = () => {
   const fetch = (url: string) => {
     setError(undefined);
     setIsFetching(true);
+    setData(undefined);
     axios
-      .get(url)
+      .get(url, { timeout: 5000 })
       .then((res) => setData(res.data))
       .catch((err) => setError({ msg: err.message }))
       .finally(() => setIsFetching(false));
