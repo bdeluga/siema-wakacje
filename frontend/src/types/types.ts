@@ -2,7 +2,15 @@ export type Error = {
 msg:string;
 }
 
-export type City={
+type responseCity={
     name:string,
-    country:string
+    country:string,
+    iso:string
+}
+
+export type City={
+    metainf:{
+        count:number
+    },
+    data:responseCity[]
 }
