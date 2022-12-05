@@ -20,6 +20,7 @@ Django app
 python -m pip install django~=4.0.0 (if is not installed)
 pip install django-cors-headers
 pip install django-environ
+pip install osmnx
 python manage.py runserver
 
 ```
