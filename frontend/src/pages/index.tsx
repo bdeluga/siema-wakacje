@@ -81,7 +81,7 @@ const Home: NextPage = () => {
               )}
             </button>
             {inputRef.current && inputRef.current.value && (
-              <div className="scrollbar relative mt-2 flex min-h-[15rem]  w-96 items-center justify-center overflow-y-scroll rounded-md bg-slate-100 p-2">
+              <div className="scrollbar relative mt-2 flex h-[15rem] w-96 flex-col items-center justify-center overflow-y-scroll rounded-md bg-slate-100 p-2">
                 {cities.isFetching && (
                   <FontAwesomeIcon
                     icon={faCircleNotch}
@@ -95,6 +95,23 @@ const Home: NextPage = () => {
                       className="text-4xl"
                     />
                     <p className="mt-2">{cities.error.msg}</p>
+                  </div>
+                )}
+                {cities.data && (
+                  <div className="flex h-full w-full flex-col items-start justify-start">
+                    {cities.data.data.map((country, idx) => (
+                      <button
+                        onClick={(e) => {
+                          if (inputRef.current)
+                            inputRef.current.value = e.currentTarget.name;
+                        }}
+                        key={idx}
+                        className="block"
+                        name={country.name}
+                      >
+                        {country.name}
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
