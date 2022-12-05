@@ -1,9 +1,8 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef } from "react";
 import Typer from "../components/Typer";
 import { useRouter } from "next/router";
-import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleNotch,
@@ -14,9 +13,9 @@ import { useFetch as useFetch } from "../utils/hooks/useFetch";
 import _ from "lodash";
 
 const Home: NextPage = () => {
-  const [isFetchingCity, setIsFetchingCity] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const cities = useFetch();
+  const city = useFetch();
 
   const onChange = (value: string) => {
     cities.fetch(`http://localhost:8000/city/${value}`);
@@ -27,17 +26,11 @@ const Home: NextPage = () => {
   const debounce = useCallback(_.debounce(onChange, 550), []);
 
   const handleSearch = () => {
-    setIsFetchingCity(true);
-    axios
-      .get(`http://localhost:8000/${inputRef.current?.value}`)
-      .then(() => {
-        router.push("/city/" + inputRef.current?.value ?? "");
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setIsFetchingCity(false));
+    city.fetch(`http://localhost:8000/${inputRef.current?.value}`);
+    if (city.error) console.error(city.error);
+    if (!city.isFetching) router.push(`city/${inputRef.current?.value}`);
   };
 
-  // TODO: Disable button on cities fetch
   // TODO: change fetch to useFetch on both
 
   const router = useRouter();
@@ -74,18 +67,18 @@ const Home: NextPage = () => {
               onClick={handleSearch}
               disabled={cities.isFetching}
             >
-              {isFetchingCity ? (
+              {city.isFetching ? (
                 <FontAwesomeIcon icon={faSpinner} className="fa-spin" />
               ) : (
                 "Szukaj"
               )}
             </button>
-            {inputRef.current && inputRef.current.value && (
-              <div className="scrollbar relative mt-2 flex h-[15rem] w-96 flex-col items-center justify-center overflow-y-scroll rounded-md bg-slate-100 p-2">
+            {inputRef.current && inputRef.current.value && !cities.data ? (
+              <div className="relative mt-2 flex h-[15rem] w-96 flex-col items-center justify-center rounded-md bg-slate-100 p-2">
                 {cities.isFetching && (
                   <FontAwesomeIcon
                     icon={faCircleNotch}
-                    className="fa-spin absolute   text-4xl"
+                    className="fa-spin absolute text-4xl"
                   />
                 )}
                 {cities.error && (
@@ -97,23 +90,31 @@ const Home: NextPage = () => {
                     <p className="mt-2">{cities.error.msg}</p>
                   </div>
                 )}
-                {cities.data && (
-                  <div className="flex h-full w-full flex-col items-start justify-start">
-                    {cities.data.data.map((country, idx) => (
-                      <button
-                        onClick={(e) => {
-                          if (inputRef.current)
-                            inputRef.current.value = e.currentTarget.name;
-                        }}
-                        key={idx}
-                        className="block"
-                        name={country.name}
-                      >
-                        {country.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
+              </div>
+            ) : (
+              <div
+                className={`scrollbar mt-2 h-[15rem] ${
+                  inputRef.current?.value ? "block" : "hidden"
+                } w-96  overflow-y-scroll rounded-md bg-slate-100 p-2 `}
+              >
+                {cities.data &&
+                  cities.data.data.map((country, idx) => (
+                    <button
+                      onClick={(e) => {
+                        if (inputRef.current)
+                          inputRef.current.value = e.currentTarget.name;
+                      }}
+                      key={idx}
+                      className="mx-auto my-4 block h-12 w-[98%] rounded-md border-2 border-slate-400 first:mt-0 last:mb-0"
+                      name={country.name}
+                      onMouseEnter={(e) => {
+                        if (inputRef.current)
+                          inputRef.current.value = e.currentTarget.name;
+                      }}
+                    >
+                      {country.name}, {country.iso}
+                    </button>
+                  ))}
               </div>
             )}
           </div>
