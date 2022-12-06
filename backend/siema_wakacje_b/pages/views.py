@@ -7,6 +7,7 @@ import json
 import osmnx as ox
 import pandas
 
+
 def cityPageView(request):
 
     # city name from path
@@ -16,12 +17,12 @@ def cityPageView(request):
         return HttpResponse(status=200)
     # search for hotels only
     tags = {'amenity': 'hotel',
-        'building': 'hotel',
-        'tourism': 'hotel'}
+            'building': 'hotel',
+            'tourism': 'hotel'}
     # geodataframe with response
     hotelResponse = ox.geometries_from_place(city, tags=tags)
     # dictionary for clean data to return
-    hotels = {'hotels' : []}
+    hotels = {'hotels': []}
     # iterate over geodataframe and append names to respone dictionary
     for ind in hotelResponse.index:
         hotel = {}
@@ -37,8 +38,8 @@ def cityQueryView(request):
     # sciezka (upper liwiduje mniejsze wieksze znaki)
     path = str(request.path)[6:].upper()
     # lista na miasta
-    cities = {'metainf':[], 'data':[]}
-    
+    cities = {'metainf': [], 'data': []}
+
     # znajduje miasta ktore sa na jakas litere
     # jak to dziala to nie czas na tlumaczenie
     if path == '':
@@ -52,11 +53,14 @@ def cityQueryView(request):
                     city['name'] = (row.split(',')[0])[1:-1]
                     city['lat'] = (row.split(',')[2])[1:-1]
                     city['lng'] = (row.split(',')[3])[1:-1]
-                    city['country'] =  (row.split(',')[4])[1:-1]
+                    city['country'] = (row.split(',')[4])[1:-1]
                     city['iso'] = (row.split(',')[6])[1:-1]
                     cities['data'].append(city)
                     count = count + 1
         inf = {}
         inf['count'] = count
-        cities['metainf'].append(inf)   
+        cities['metainf'].append(inf)
+        if(inf['count'] == 0):
+            return JsonResponse({'message': 'Szukane miasto nie istnieje.'}, status=404)
+
         return JsonResponse(cities)
