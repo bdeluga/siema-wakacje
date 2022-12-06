@@ -18,10 +18,14 @@ const Home: NextPage = () => {
   const city = useFetch();
 
   const onChange = (value: string) => {
+    if (value.length < 3) {
+      cities.setError(undefined);
+      cities.setData(undefined);
+      return;
+    }
     cities.fetch(`http://localhost:8000/city/${value}`);
   };
 
-  console.log(cities.data);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(_.debounce(onChange, 550), []);
 
@@ -34,7 +38,7 @@ const Home: NextPage = () => {
   // TODO: change fetch to useFetch on both
 
   const router = useRouter();
-
+  console.log(cities.data);
   return (
     <>
       <Head>
@@ -73,8 +77,11 @@ const Home: NextPage = () => {
                 "Szukaj"
               )}
             </button>
-            {inputRef.current && inputRef.current.value && !cities.data ? (
-              <div className="relative mt-2 flex h-[15rem] w-96 flex-col items-center justify-center rounded-md bg-slate-100 p-2">
+            {cities.isFetching || cities.error ? (
+              <div
+                className={`relative mt-2 flex h-[15rem] w-96 flex-col items-center justify-center rounded-md bg-slate-100 p-2
+              `}
+              >
                 {cities.isFetching && (
                   <FontAwesomeIcon
                     icon={faCircleNotch}
@@ -94,27 +101,24 @@ const Home: NextPage = () => {
             ) : (
               <div
                 className={`scrollbar mt-2 h-[15rem] ${
-                  inputRef.current?.value ? "block" : "hidden"
+                  cities.data ? "block" : "hidden"
                 } w-96  overflow-y-scroll rounded-md bg-slate-100 p-2 `}
               >
-                {cities.data &&
-                  cities.data.data.map((country, idx) => (
-                    <button
-                      onClick={(e) => {
-                        if (inputRef.current)
-                          inputRef.current.value = e.currentTarget.name;
-                      }}
-                      key={idx}
-                      className="mx-auto my-4 block h-12 w-[98%] rounded-md border-2 border-slate-400 first:mt-0 last:mb-0"
-                      name={country.name}
-                      onMouseEnter={(e) => {
-                        if (inputRef.current)
-                          inputRef.current.value = e.currentTarget.name;
-                      }}
-                    >
-                      {country.name}, {country.iso}
-                    </button>
-                  ))}
+                {cities.data
+                  ? cities.data.data.map((country, idx) => (
+                      <button
+                        onClick={(e) => {
+                          if (inputRef.current)
+                            inputRef.current.value = e.currentTarget.name;
+                        }}
+                        key={idx}
+                        className="mx-auto my-4 block h-12 w-[98%] rounded-md border-2 border-slate-400 first:mt-0 last:mb-0"
+                        name={country.name}
+                      >
+                        {country.name}, {country.iso}
+                      </button>
+                    ))
+                  : null}
               </div>
             )}
           </div>
