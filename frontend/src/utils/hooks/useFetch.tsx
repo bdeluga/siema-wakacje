@@ -13,9 +13,9 @@ export const useFetch = () => {
     axios
       .get(url, { timeout: 5000 })
       .then((res) => setData(res.data))
-      .catch((err) => setError({ msg: err.message }))
+      .catch((err) => setError({ msg: err.response.data.message }))
       .finally(() => setIsFetching(false));
   };
-
-  return { fetch, data, isFetching, error };
+  //in case of debounce
+  return { fetch, data, isFetching, error, setData, setError };
 };
