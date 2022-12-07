@@ -19,8 +19,7 @@ const Home: NextPage = () => {
 
   const onChange = (value: string) => {
     if (value.length < 3) {
-      cities.setError(undefined);
-      cities.setData(undefined);
+      cities.clear();
       return;
     }
     cities.fetch(`http://localhost:8000/city/${value}`);
@@ -77,50 +76,27 @@ const Home: NextPage = () => {
                 "Szukaj"
               )}
             </button>
-            {cities.isFetching || cities.error ? (
-              <div
-                className={`relative mt-2 flex h-[15rem] w-96 flex-col items-center justify-center rounded-md bg-slate-100 p-2
-              `}
-              >
-                {cities.isFetching && (
-                  <FontAwesomeIcon
-                    icon={faCircleNotch}
-                    className="fa-spin absolute text-4xl"
-                  />
-                )}
-                {cities.error && (
-                  <div className="flex flex-col text-red-500">
-                    <FontAwesomeIcon
-                      icon={faExclamationCircle}
-                      className="text-4xl"
-                    />
-                    <p className="mt-2">{cities.error.msg}</p>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div
-                className={`scrollbar mt-2 h-[15rem] ${
-                  cities.data ? "block" : "hidden"
-                } w-96  overflow-y-scroll rounded-md bg-slate-100 p-2 `}
-              >
-                {cities.data
-                  ? cities.data.data.map((country, idx) => (
-                      <button
-                        onClick={(e) => {
-                          if (inputRef.current)
-                            inputRef.current.value = e.currentTarget.name;
-                        }}
-                        key={idx}
-                        className="mx-auto my-4 block h-12 w-[98%] rounded-md border-2 border-slate-400 first:mt-0 last:mb-0"
-                        name={country.name}
-                      >
-                        {country.name}, {country.iso}
-                      </button>
-                    ))
-                  : null}
-              </div>
-            )}
+            <div
+              className={`scrollbar mt-2 h-[15rem] w-96  overflow-y-auto rounded-md bg-slate-100 p-2`}
+            >
+              {cities.data && cities.data.data ? (
+                <>
+                  {cities.data.data.map((city, idx) => (
+                    <button
+                      onClick={(e) => {
+                        if (inputRef.current)
+                          inputRef.current.value = e.currentTarget.name;
+                      }}
+                      key={idx}
+                      className="mx-auto my-2 block h-14 w-[98%] rounded-md border-2 border-slate-400 first:mt-0 last:mb-0"
+                      name={city.name}
+                    >
+                      {city.name}, {city.iso}
+                    </button>
+                  ))}
+                </>
+              ) : null}
+            </div>
           </div>
         </div>
       </main>

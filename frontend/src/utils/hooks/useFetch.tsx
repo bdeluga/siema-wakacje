@@ -16,6 +16,12 @@ export const useFetch = () => {
       .catch((err) => setError({ msg: err.response.data.message }))
       .finally(() => setIsFetching(false));
   };
-  //in case of debounce
-  return { fetch, data, isFetching, error, setData, setError };
+
+  const clear = () => {
+    setData(undefined);
+    setError(undefined);
+  };
+
+  //returning clear method in case of debounce
+  return { fetch, data, isFetching, error, clear };
 };
