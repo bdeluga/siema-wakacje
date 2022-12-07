@@ -1,13 +1,27 @@
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useRef } from "react";
-import { useFetch } from "../../utils/hooks/useFetch";
-
+import FourOhFour from "../404";
+// import { useRef } from "react";
+// import { useFetch } from "../../utils/hooks/useFetch";
 const City = () => {
   const router = useRouter();
-  const { city } = router.query;
-  const cities = useFetch();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { city, lat, lng } = router.query;
+  if (!lat || !lng) return <FourOhFour />;
+  console.log(Number(lat), Number(lng));
+  const Map = dynamic(() => import("@/components/leafletMap"), {
+    loading: () => (
+      <div className="flex flex-col  gap-2 text-slate-100">
+        <FontAwesomeIcon className="fa-spin text-4xl" icon={faCircleNotch} />
+        <span>Wczytywanie mapy...</span>
+      </div>
+    ),
+    ssr: false,
+  });
+  // const cities = useFetch();
+  // const inputRef = useRef<HTMLInputElement>(null);
   return (
     <>
       <Head>
@@ -27,9 +41,11 @@ const City = () => {
             readOnly
           /> */}
           <h1 className="text-4xl text-slate-100  drop-shadow-md">Warszawa</h1>
-          <div className="mt-10 flex-grow ">elo</div>
+          <div className="mt-10 flex-grow "></div>
         </div>
-        <div className="h-full w-1/2"></div>
+        <div className="flex h-full w-1/2 items-center justify-center">
+          <Map lat={Number(lat)} lng={Number(lng)} />
+        </div>
       </main>
     </>
   );
