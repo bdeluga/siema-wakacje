@@ -29,9 +29,20 @@ const Home: NextPage = () => {
   const debounce = useCallback(_.debounce(onChange, 550), []);
 
   const handleSearch = () => {
-    city.fetch(`http://localhost:8000/${inputRef.current?.value}`);
-    if (city.error) console.error(city.error);
-    if (!city.isFetching) router.push(`city/${inputRef.current?.value}`);
+    const foundCity = cities.data?.data.find(
+      (city) => city.name === `${inputRef.current?.value}`
+    );
+    if (foundCity) {
+      const { lat, lng } = foundCity;
+      city.fetch(`http://localhost:8000/${inputRef.current?.value}`);
+      if (city.error) console.error(city.error);
+      if (!city.isFetching) {
+        router.push({
+          pathname: `city/${inputRef.current?.value}`,
+          query: { lat, lng },
+        });
+      }
+    }
   };
 
   // TODO: change fetch to useFetch on both
