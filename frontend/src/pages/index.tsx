@@ -50,7 +50,6 @@ const Home: NextPage = () => {
   // TODO: change fetch to useFetch on both
 
   const router = useRouter();
-  console.log(cities.data);
   return (
     <>
       <Head>
@@ -71,7 +70,7 @@ const Home: NextPage = () => {
             <input
               ref={inputRef}
               type={"text"}
-              className={` h-14 w-96 rounded-md  border-gray-800 bg-slate-100  pl-2 pr-24 text-xl text-gray-800 duration-500 ${
+              className={` h-14 w-96 rounded-md  border-gray-800 bg-slate-100 pl-2 pr-24  text-xl text-gray-800 duration-500 dark:bg-slate-600 dark:text-slate-100 ${
                 cities.error &&
                 "rounded-md border-2 border-l-[1rem] border-red-500"
               }`}
@@ -80,7 +79,7 @@ const Home: NextPage = () => {
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
             <button
-              className=" absolute top-2 right-2 flex h-10 w-20  items-center justify-center rounded-md  border-2 border-slate-700 text-xl text-gray-800 duration-300 hover:bg-slate-700  hover:text-gray-100 disabled:pointer-events-none"
+              className=" absolute top-2 right-2 flex h-10 w-20  items-center justify-center rounded-md  border-2 border-slate-700 text-xl text-gray-800 duration-300 hover:bg-slate-700 hover:text-gray-100 disabled:pointer-events-none dark:border-slate-300 dark:text-slate-100 hover:dark:bg-slate-400 hover:dark:text-slate-800"
               onClick={handleSearch}
               disabled={cities.isFetching}
             >
@@ -95,7 +94,7 @@ const Home: NextPage = () => {
                 inputRef.current && inputRef.current.value.length > 2
                   ? "block"
                   : "hidden"
-              } mt-2 h-fit max-h-[15rem] w-96 overflow-y-auto rounded-md  bg-slate-100 p-2 transition-transform duration-300`}
+              } mt-2 h-fit max-h-[15rem] w-96 overflow-y-auto rounded-md bg-slate-100 p-2 transition-transform duration-300 dark:bg-slate-600`}
             >
               {cities.data && cities.data.data ? (
                 <>
