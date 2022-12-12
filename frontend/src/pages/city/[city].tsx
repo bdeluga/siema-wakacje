@@ -8,6 +8,7 @@ import FourOhFour from "../404";
 // import { useFetch } from "../../utils/hooks/useFetch";
 const City = () => {
   const router = useRouter();
+
   const { city, lat, lng } = router.query;
   if (!lat || !lng) return <FourOhFour />;
   console.log(Number(lat), Number(lng));
@@ -40,7 +41,7 @@ const City = () => {
             value={`${city}`}
             readOnly
           /> */}
-          <h1 className="text-4xl text-slate-100  drop-shadow-md">Warszawa</h1>
+          <h1 className="text-4xl text-slate-100  drop-shadow-md">{city}</h1>
           <div className="mt-10 flex-grow "></div>
         </div>
         <div className="flex h-full w-1/2 items-center justify-center">
