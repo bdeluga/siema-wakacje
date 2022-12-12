@@ -29,9 +29,20 @@ const Home: NextPage = () => {
   const debounce = useCallback(_.debounce(onChange, 550), []);
 
   const handleSearch = () => {
-    city.fetch(`http://localhost:8000/${inputRef.current?.value}`);
-    if (city.error) console.error(city.error);
-    if (!city.isFetching) router.push(`city/${inputRef.current?.value}`);
+    const foundCity = cities.data?.data.find(
+      (city) => city.name === `${inputRef.current?.value}`
+    );
+    if (foundCity) {
+      const { lat, lng } = foundCity;
+      city.fetch(`http://localhost:8000/${inputRef.current?.value}`);
+      if (city.error) console.error(city.error);
+      if (!city.isFetching) {
+        router.push({
+          pathname: `city/${inputRef.current?.value}`,
+          query: { lat, lng },
+        });
+      }
+    }
   };
 
   // TODO: change fetch to useFetch on both
@@ -77,7 +88,11 @@ const Home: NextPage = () => {
               )}
             </button>
             <div
-              className={`scrollbar mt-2 h-[15rem] w-96  overflow-y-auto rounded-md bg-slate-100 p-2`}
+              className={`scrollbar ${
+                inputRef.current && inputRef.current.value.length > 2
+                  ? "block"
+                  : "hidden"
+              } mt-2 h-fit max-h-[15rem] w-96 overflow-y-auto rounded-md  bg-slate-100 p-2 transition-transform duration-300`}
             >
               {cities.data && cities.data.data ? (
                 <>

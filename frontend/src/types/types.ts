@@ -3,9 +3,11 @@ msg:string;
 }
 
 type responseCity={
-    name:string,
-    country:string,
+    name:string
+    country:string
     iso:string
+    lat:number
+    lng:number
 }
 
 export type City={
