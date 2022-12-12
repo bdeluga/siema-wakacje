@@ -8,9 +8,11 @@ import {
   faCircleNotch,
   faExclamationCircle,
   faSpinner,
+  faSun,
 } from "@fortawesome/free-solid-svg-icons";
 import { useFetch as useFetch } from "../utils/hooks/useFetch";
 import _ from "lodash";
+import Header from "@/components/Header";
 
 const Home: NextPage = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -56,6 +58,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="text-blue flex min-h-screen w-screen flex-col items-center justify-start overflow-hidden bg-view bg-cover bg-center bg-no-repeat  text-slate-800 ">
+        <Header />
         <h1 className="mt-4 w-full pl-32 text-[4rem] xl:text-[6rem]">
           Szukasz...&nbsp;
           <Typer />
