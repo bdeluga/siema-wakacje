@@ -88,30 +88,6 @@ const Home: NextPage = () => {
               )}
             </button>
             <div
-              //TODO
-              //transition duration-500 ease-in-out transform
-              // import { useSpring, animated } from "react-spring";
-
-              // function MyComponent() {
-              //   const [props, set] = useSpring(() => ({
-              //     height: 0,
-              //     width: 0,
-              //   }));
-
-              //   // Calculate the height and width of the component based on the elements in the array
-              //   const height = /* calculate height here */;
-              //   const width = /* calculate width here */;
-
-              //   // Set the height and width of the component
-              //   set({ height, width });
-
-              //   return (
-              //     <animated.div style={props}>
-              //       {/* Your component content here */}
-              //     </animated.div>
-              //   );
-              // }
-
               className={`scrollbar ${
                 inputRef.current && inputRef.current.value.length > 2
                   ? "block"
