@@ -6,14 +6,7 @@ import os
 import json
 import osmnx as ox
 import pandas
-import sqlite3
 
-conn = sqlite3.connect('c:/Python/BED/example.sqlite')
-c = conn.cursor()
-
-for row in c.execute('SELECT * FROM transakcje'):
-        print(row)
-c.close()
 
 def cityPageView(request):
 
