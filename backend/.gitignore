@@ -104,8 +104,6 @@ venv/
 ENV/ 
 env.bak/ 
 venv.bak/ 
-# Cache
-siema_wakacje_b/cache
 
 # mkdocs documentation 
 /site 
