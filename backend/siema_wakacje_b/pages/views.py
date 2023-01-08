@@ -8,7 +8,27 @@ import osmnx as ox
 import pandas
 import sqlite3
 
+# tymczasowe polaczenie
+connection = sqlite3.connect('data.db')
+cursor = connection.cursor()
+create_table = '''CREATE TABLE DATA(
+                city TEXT,
+                city_ascii TEXT,
+                lat INTEGER,
+                lng INTEGER,
+                country TEXT,
+                iso2 TEXT,
+                admin_name TEXT,
+                capital TEXT,
+                population INTEGER,
+                id INTEGER);
+                '''
 
+cursor.execute(create_table)
+file = open('worldcities.csv')
+contents = csv.reader(file)
+insert_records = "INSERT INTO DATA (city, country) VALUES(?, ?)"
+cursor.executemany(insert_records, contents)
 
 def cityPageView(request):
 
@@ -38,6 +58,9 @@ def cityQueryView(request):
     # nasza baza 40k miast
     worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
     # sciezka (upper liwiduje mniejsze wieksze znaki)
+    #
+  #  path = str(contents)[6:].upper()
+
     path = str(request.path)[6:].upper()
     # lista na miasta
     cities = {'metainf': [], 'data': []}
@@ -66,3 +89,7 @@ def cityQueryView(request):
             return JsonResponse({'message': 'Szukane miasto nie istnieje.'}, status=404)
 
         return JsonResponse(cities)
+
+
+connection.commit()
+connection.close()
