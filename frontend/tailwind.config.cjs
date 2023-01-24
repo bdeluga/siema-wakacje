@@ -26,6 +26,7 @@ module.exports = {
       },
       backgroundImage: {
         view: "url('/background.svg')",
+        "view-dark": "url('/background-dark.png')",
       },
     },
   },
