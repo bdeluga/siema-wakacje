@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import NightsStayIcon from "@mui/icons-material/NightsStay";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import ComputerIcon from "@mui/icons-material/Computer";
+import { faDesktop, faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import { useClickOustside } from "@/utils/hooks/useClickOutside";
 import { useTheme } from "next-themes";
 import SelectDiv from "./SelectDiv";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const Dropdown = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -21,18 +20,18 @@ export const Dropdown = () => {
 
   return (
     <div className="relative " ref={dropDownRef}>
-      <button
-        onClick={handleClick}
-        className="flex items-center justify-center rounded-md bg-slate-700 p-1"
-      >
+      <button onClick={handleClick} className="btn">
         {theme === "dark" && (
-          <NightsStayIcon className="text-3xl dark:text-amber-100 " />
+          <FontAwesomeIcon icon={faMoon} className="dark:text-amber-100 " />
         )}
         {theme === "light" && (
-          <LightModeIcon className="text-3xl text-yellow-500 " />
+          <FontAwesomeIcon icon={faSun} className="text-yellow-500 " />
         )}
         {theme === "system" && (
-          <ComputerIcon className="text-3xl text-gray-700 dark:text-gray-300" />
+          <FontAwesomeIcon
+            icon={faDesktop}
+            className="text-gray-700 dark:text-gray-300"
+          />
         )}
       </button>
       {open && <SelectDiv setMode={handleChangeMode} />}
