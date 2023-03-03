@@ -1,3 +1,4 @@
+import useTheme from "@/utils/hooks/useTheme";
 import React, { useEffect, useState } from "react";
 import { Dropdown } from "./Dropdown";
 export default function Header() {
@@ -7,12 +8,28 @@ export default function Header() {
     setMount(true);
   }, []);
 
+  const { theme, setTheme } = useTheme({
+    light: "corporate",
+    dark: "business",
+  });
+
   return (
-    <header className="flex h-12 w-full items-center   justify-end gap-4 pr-4">
-      <button className="rounded-md border-[3px] border-slate-700 px-2 py-0.5 duration-300 hover:bg-slate-700 hover:text-slate-100">
-        Zaloguj się!
-      </button>
-      {mount && <Dropdown />}
+    <header className="mt-4 flex h-12 w-full items-center   justify-end gap-4 pr-4">
+      {mount && (
+        <>
+          {theme}
+          <button className="btn">Zaloguj się!</button>
+          <button className="btn" onClick={() => setTheme("light")}>
+            L
+          </button>
+          <button className="btn" onClick={() => setTheme("dark")}>
+            D
+          </button>
+          <button className="btn" onClick={() => setTheme("system")}>
+            S
+          </button>
+        </>
+      )}
     </header>
   );
 }

@@ -6,7 +6,6 @@ import "../styles/globals.css";
 import { Poppins } from "@next/font/google";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { ThemeProvider } from "next-themes";
 config.autoAddCss = false;
 
 const poppins = Poppins({ subsets: ["latin"], weight: "400" });
@@ -17,11 +16,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <ThemeProvider attribute="class">
-        <main className={poppins.className}>
-          <Component {...pageProps} />
-        </main>
-      </ThemeProvider>
+      <main className={poppins.className}>
+        <Component {...pageProps} />
+      </main>
     </SessionProvider>
   );
 };

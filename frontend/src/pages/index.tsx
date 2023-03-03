@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleNotch,
   faExclamationCircle,
+  faMagnifyingGlass,
   faSpinner,
   faSun,
 } from "@fortawesome/free-solid-svg-icons";
@@ -55,9 +56,9 @@ const Home: NextPage = () => {
         <title>Siema Wakacje</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="text-blue flex min-h-screen w-screen flex-col items-center justify-start overflow-hidden bg-view bg-cover bg-center bg-no-repeat text-slate-800  dark:bg-view-dark ">
+      <main className="text-blue flex min-h-screen w-screen flex-col items-center justify-start overflow-hidden bg-view bg-cover bg-center bg-no-repeat dark:bg-view-dark ">
         <Header />
-        <h1 className="mt-4 w-full pl-32 text-[4rem] xl:text-[6rem]">
+        <h1 className="mt-4 w-full pl-32 text-[4rem] text-black  xl:text-[6rem]">
           Szukasz...&nbsp;
           <Typer />
         </h1>
@@ -65,53 +66,16 @@ const Home: NextPage = () => {
           My to znajdziemy.
         </p>
         <div className=" w-full pl-32">
-          <div className="relative mt-4 w-min">
-            <input
-              ref={inputRef}
-              type={"text"}
-              className={` h-14 w-96 rounded-md  border-gray-800 bg-slate-100 pl-2 pr-24  text-xl text-gray-800 duration-500 dark:bg-slate-600 dark:text-slate-100 ${
-                cities.error &&
-                "rounded-md border-2 border-l-[1rem] border-red-500"
-              }`}
-              placeholder="Wpisz miasto..."
-              onChange={(e) => debounce(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            />
-            <button
-              className=" absolute top-2 right-2 flex h-10 w-20  items-center justify-center rounded-md  border-2 border-slate-700 text-xl text-gray-800 duration-300 hover:bg-slate-700 hover:text-gray-100 disabled:pointer-events-none dark:border-slate-300 dark:text-slate-100 hover:dark:bg-slate-400 hover:dark:text-slate-800"
-              onClick={handleSearch}
-              disabled={cities.isFetching}
-            >
-              {city.isFetching ? (
-                <FontAwesomeIcon icon={faSpinner} className="fa-spin" />
-              ) : (
-                "Szukaj"
-              )}
-            </button>
-            <div
-              className={`scrollbar ${
-                inputRef.current && inputRef.current.value.length > 2
-                  ? "block"
-                  : "hidden"
-              } mt-2 h-fit max-h-[15rem] w-96 overflow-y-auto rounded-md bg-slate-100 p-2 transition-transform duration-300 dark:bg-slate-600`}
-            >
-              {cities.data && cities.data.data ? (
-                <>
-                  {cities.data.data.map((city, idx) => (
-                    <button
-                      onClick={(e) => {
-                        if (inputRef.current)
-                          inputRef.current.value = e.currentTarget.name;
-                      }}
-                      key={idx}
-                      className="mx-auto my-2 block h-14 w-[98%] rounded-md border-2 border-slate-400 first:mt-0 last:mb-0"
-                      name={city.name}
-                    >
-                      {city.name}, {city.iso}
-                    </button>
-                  ))}
-                </>
-              ) : null}
+          <div className="mt-6">
+            <div className="input-group">
+              <input
+                type="text"
+                placeholder="Wyszukaj miasta..."
+                className="input-bordered input"
+              />
+              <button className="btn">
+                <FontAwesomeIcon icon={faMagnifyingGlass} />
+              </button>
             </div>
           </div>
         </div>
