@@ -58,11 +58,11 @@ const Home: NextPage = () => {
       </Head>
       <main className="text-blue flex min-h-screen w-screen flex-col items-center justify-start overflow-hidden bg-view bg-cover bg-center bg-no-repeat dark:bg-view-dark ">
         <Header />
-        <h1 className="mt-4 w-full pl-32 text-[4rem] text-black  xl:text-[6rem]">
+        <h1 className="mt-4 w-full pl-32 text-[4rem] xl:text-[6rem]">
           Szukasz...&nbsp;
           <Typer />
         </h1>
-        <p className="ml-32 self-start text-2xl font-bold italic text-gray-800 xl:text-3xl">
+        <p className="ml-32 self-start text-2xl font-bold italic xl:text-3xl">
           My to znajdziemy.
         </p>
         <div className=" w-full pl-32">
