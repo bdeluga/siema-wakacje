@@ -22,6 +22,7 @@ export default function Header() {
 
   const handleChangeTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
     setTheme(e.currentTarget.id as Theme);
+    setIsVisible(false);
   };
 
   const renderIcon = () => {
@@ -31,7 +32,11 @@ export default function Header() {
       case "light":
         return <FontAwesomeIcon icon={faSun} />;
       case "system":
-        return <FontAwesomeIcon icon={faDesktop} />;
+        return window.matchMedia("(prefers-color-scheme: dark)").matches ? (
+          <FontAwesomeIcon icon={faMoon} />
+        ) : (
+          <FontAwesomeIcon icon={faSun} />
+        );
     }
   };
 
@@ -45,36 +50,36 @@ export default function Header() {
 
           <div ref={ref} className="relative">
             <button
-              className="btn m-1"
+              className="btn m-1 w-14"
               onClick={() => setIsVisible((prev) => !prev)}
             >
               {renderIcon()}
             </button>
             {isVisible && (
-              <div className="menu rounded-box absolute w-full bg-neutral py-2 text-base-100 shadow">
-                <li>
-                  <button
-                    className="btn"
-                    id="light"
-                    onClick={handleChangeTheme}
-                  >
-                    <FontAwesomeIcon icon={faSun} />
-                  </button>
-                </li>
-                <li>
-                  <button className="btn" id="dark" onClick={handleChangeTheme}>
-                    <FontAwesomeIcon icon={faMoon} />
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="btn"
-                    id="system"
-                    onClick={handleChangeTheme}
-                  >
-                    <FontAwesomeIcon icon={faDesktop} />
-                  </button>
-                </li>
+              <div className="form-control absolute w-full bg-neutral py-1 shadow">
+                <button
+                  className={`btn ${theme === "light" && " text-accent"}`}
+                  id="light"
+                  onClick={handleChangeTheme}
+                >
+                  <FontAwesomeIcon icon={faSun} />
+                </button>
+
+                <button
+                  className={`btn ${theme === "dark" && " text-accent"}`}
+                  id="dark"
+                  onClick={handleChangeTheme}
+                >
+                  <FontAwesomeIcon icon={faMoon} />
+                </button>
+
+                <button
+                  className={`btn ${theme === "system" && " text-accent"}`}
+                  id="system"
+                  onClick={handleChangeTheme}
+                >
+                  <FontAwesomeIcon icon={faDesktop} />
+                </button>
               </div>
             )}
           </div>
