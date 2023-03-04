@@ -52,7 +52,10 @@ const useTheme = ({ light, dark }: ThemeClassNames) => {
   useEffect(() => {
     localStorage.setItem(storageKey, theme);
     document.documentElement.className = resolveTheme(theme);
-    document.documentElement.setAttribute(attr, resolveTheme(theme));
+    document.documentElement.setAttribute(
+      attr,
+      resolveTheme(theme) === "light" ? light : dark
+    );
   }, [theme]);
 
   return { theme, setTheme };
