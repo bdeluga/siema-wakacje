@@ -1,24 +1,23 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const useClickOustside = (callBack: Function) => {
+const useClickOutside = () => {
+  const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent): void {
-      //check if event is outside of Element
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        callBack();
-      }
+  const handleClickOutside = (event: MouseEvent) => {
+    if (ref.current && !ref.current.contains(event.target as Node)) {
+      setIsVisible(false);
     }
+  };
 
-    // Bind the event listener
-    document.addEventListener("mousedown", handleClickOutside);
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside, true);
     return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("click", handleClickOutside, true);
     };
   });
 
-  return ref;
+  return { ref, isVisible, setIsVisible };
 };
+
+export default useClickOutside;
