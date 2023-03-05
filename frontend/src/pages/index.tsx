@@ -1,54 +1,41 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import React, { useCallback, useRef } from "react";
+import React, { useState } from "react";
 import Typer from "../components/Typer";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCircleNotch,
-  faExclamationCircle,
-  faMagnifyingGlass,
-  faSpinner,
-  faSun,
-} from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { useFetch } from "../utils/hooks/useFetch";
-import _ from "lodash";
+import debounce from "lodash/debounce";
 import Header from "@/components/Header";
+import type { City } from "@/utils/types";
+import type { AxiosError, AxiosResponse } from "axios";
+import { useToastStore } from "@/useStore";
 
 const Home: NextPage = () => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const cities = useFetch();
+  const { show } = useToastStore();
+
+  const handleError = (err: AxiosError) => {
+    if (err.status?.toString().startsWith("4"))
+      return show({ type: "error", text: err.message });
+
+    return show({
+      type: "error",
+      text: "Zewnętrzny błąd serwera. Spróbuj ponownie.",
+    });
+  };
+
+  const [data, setData] = useState<City[]>([]);
   const city = useFetch();
 
-  const router = useRouter();
-
-  const onChange = (value: string) => {
-    if (value.length < 3) {
-      cities.clear();
-      return;
-    }
-    cities.fetch(`http://localhost:8000/city/${value}`);
-  };
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounce = useCallback(_.debounce(onChange, 550), []);
-
-  const handleSearch = () => {
-    const foundCity = cities.data?.data.find(
-      (city) => city.name === `${inputRef.current?.value}`
-    );
-    if (foundCity) {
-      const { lat, lng } = foundCity;
-      city.fetch(`http://localhost:8000/${inputRef.current?.value}`);
-      if (city.error) console.error(city.error);
-      if (!city.isFetching) {
-        router.push({
-          pathname: `city/${inputRef.current?.value}`,
-          query: { lat, lng },
-        });
-      }
-    }
-  };
+  const handleChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+    if (input.length <= 3) return;
+    city
+      .fetch(`http://localhost:8000/city/${input}`)
+      .then((res: AxiosResponse<City[]>) => setData(res.data))
+      .catch((err: AxiosError) => handleError(err));
+  }, 550);
 
   return (
     <>
@@ -66,17 +53,39 @@ const Home: NextPage = () => {
           My to znajdziemy.
         </p>
         <div className=" w-full pl-32">
-          <div className="mt-6">
-            <div className="input-group">
+          <div className="mt-6 w-min">
+            <div className="input-group ">
               <input
                 type="text"
                 placeholder="Wyszukaj miasta..."
                 className="input-bordered input"
+                onChange={handleChange}
               />
               <button className="btn">
                 <FontAwesomeIcon icon={faMagnifyingGlass} />
               </button>
             </div>
+
+            {city.isFetching || data.length ? (
+              <div className="fit scrollbar card mt-1 flex max-h-56 w-full flex-col space-y-1 overflow-y-auto bg-base-100 p-2">
+                {city.isFetching ? (
+                  <>
+                    <button className="btn pointer-events-none animate-pulse border-none bg-base-300" />
+                    <button className="btn pointer-events-none animate-pulse border-none bg-base-300" />
+                    <button className="btn pointer-events-none animate-pulse border-none bg-base-300" />
+                    <button className="btn pointer-events-none animate-pulse border-none bg-base-300" />
+                  </>
+                ) : (
+                  <>
+                    {data.map((city) => (
+                      <button className="btn" key={city.name}>
+                        {city.name}
+                      </button>
+                    ))}
+                  </>
+                )}
+              </div>
+            ) : null}
           </div>
         </div>
       </main>
