@@ -15,11 +15,18 @@ import { useToastStore } from "@/useStore";
 const Home: NextPage = () => {
   const { show } = useToastStore();
 
-  const handleError = (err: AxiosError) => {
-    if (err.status?.toString().startsWith("4"))
-      return show({ type: "error", text: err.message });
+  const router = useRouter();
 
-    return show({
+  const handleError = (err: AxiosError) => {
+    if (err.response && err.response.status?.toString().startsWith("4")) {
+      setData([]);
+      return show({
+        type: "error",
+        text: (err.response.data as { message: string }).message,
+      });
+    }
+    setData([]);
+    show({
       type: "error",
       text: "Zewnętrzny błąd serwera. Spróbuj ponownie.",
     });
@@ -30,10 +37,12 @@ const Home: NextPage = () => {
 
   const handleChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
-    if (input.length <= 3) return;
+    if (input.length < 3) return setData([]);
     city
-      .fetch(`http://localhost:8000/city/${input}`)
-      .then((res: AxiosResponse<City[]>) => setData(res.data))
+      .fetch(`http://127.0.0.1:8000/city/${input}`)
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+      .then((res: AxiosResponse) => setData(res.data.data))
       .catch((err: AxiosError) => handleError(err));
   }, 550);
 
@@ -67,7 +76,7 @@ const Home: NextPage = () => {
             </div>
 
             {city.isFetching || data.length ? (
-              <div className="fit scrollbar card mt-1 flex max-h-56 w-full flex-col space-y-1 overflow-y-auto bg-base-100 p-2">
+              <div className="scrollbar card mt-1 flex max-h-56 w-full flex-col space-y-1 overflow-y-auto rounded-sm bg-base-100 p-1">
                 {city.isFetching ? (
                   <>
                     <button className="btn pointer-events-none animate-pulse border-none bg-base-300" />
@@ -77,9 +86,11 @@ const Home: NextPage = () => {
                   </>
                 ) : (
                   <>
-                    {data.map((city) => (
-                      <button className="btn" key={city.name}>
-                        {city.name}
+                    {data.map((city, idx) => (
+                      <button className="btn animate-none " key={idx}>
+                        <p>
+                          {city.name}, {city.iso}
+                        </p>
                       </button>
                     ))}
                   </>
