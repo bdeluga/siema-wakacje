@@ -58,7 +58,7 @@ export default function Header() {
             {isVisible && (
               <div className="form-control absolute w-full bg-neutral py-1 shadow">
                 <button
-                  className={`btn ${theme === "light" && " text-accent"}`}
+                  className={`btn ${theme === "light" ? "text-accent" : ""}`}
                   id="light"
                   onClick={handleChangeTheme}
                 >
@@ -66,7 +66,7 @@ export default function Header() {
                 </button>
 
                 <button
-                  className={`btn ${theme === "dark" && " text-accent"}`}
+                  className={`btn ${theme === "dark" ? "text-accent" : ""}`}
                   id="dark"
                   onClick={handleChangeTheme}
                 >
@@ -74,7 +74,7 @@ export default function Header() {
                 </button>
 
                 <button
-                  className={`btn ${theme === "system" && " text-accent"}`}
+                  className={`btn ${theme === "system" ? "text-accent" : ""}`}
                   id="system"
                   onClick={handleChangeTheme}
                 >
