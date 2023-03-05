@@ -1,26 +1,29 @@
-import axios from "axios";
 import { useState } from "react";
-import type { City, Error } from "../../types/types";
+import axios, { type AxiosError } from "axios";
+import type { FetchResponse } from "@/types";
+
 export const useFetch = () => {
-  const [data, setData] = useState<City>();
-  const [isFetching, setIsFetching] = useState<boolean>(false);
-  const [error, setError] = useState<Error>();
+  const [res, setRes] = useState<FetchResponse | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
 
   const fetch = (url: string) => {
-    setError(undefined);
     setIsFetching(true);
     axios
       .get(url, { timeout: 5000 })
-      .then((res) => setData(res.data))
-      .catch((err) => setError({ msg: err.response.data.message }))
-      .finally(() => setIsFetching(false));
+      .then((res) => {
+        setRes({
+          data: res.data,
+        });
+      })
+      .catch((err: AxiosError) => {
+        setRes({
+          error: err,
+        });
+      })
+      .finally(() => {
+        setIsFetching(false);
+      });
   };
 
-  const clear = () => {
-    setData(undefined);
-    setError(undefined);
-  };
-
-  //returning clear method in case of debounce
-  return { fetch, data, isFetching, error, clear };
+  return { fetch, res, isFetching };
 };
