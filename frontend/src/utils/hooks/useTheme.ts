@@ -56,7 +56,7 @@ const useTheme = ({ light, dark }: ThemeClassNames) => {
       attr,
       resolveTheme(theme) === "light" ? light : dark
     );
-  }, [theme]);
+  }, [theme, dark, light]);
 
   return { theme, setTheme };
 };
