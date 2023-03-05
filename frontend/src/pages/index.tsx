@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Typer from "../components/Typer";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,8 +14,12 @@ import { useToastStore } from "@/useStore";
 
 const Home: NextPage = () => {
   const { show } = useToastStore();
-
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  const handleSubmit = async () => {
+    if (inputRef.current) await router.push(`city/${inputRef.current?.value}`);
+  };
 
   const handleError = (err: AxiosError) => {
     if (err.response && err.response.status?.toString().startsWith("4")) {
@@ -35,8 +39,9 @@ const Home: NextPage = () => {
   const [data, setData] = useState<City[]>([]);
   const city = useFetch();
 
-  const handleChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value;
+  const handleChange = debounce(() => {
+    const input = inputRef.current?.value || "";
+
     if (input.length < 3) return setData([]);
     city
       .fetch(`http://127.0.0.1:8000/city/${input}`)
@@ -69,8 +74,9 @@ const Home: NextPage = () => {
                 placeholder="Wyszukaj miasta..."
                 className="input-bordered input"
                 onChange={handleChange}
+                ref={inputRef}
               />
-              <button className="btn">
+              <button className="btn" onClick={() => void handleSubmit()}>
                 <FontAwesomeIcon icon={faMagnifyingGlass} />
               </button>
             </div>

@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { GetServerSideProps } from "next/types";
 import FourOhFour from "../404";
-// import { useRef } from "react";
-// import { useFetch } from "../../utils/hooks/useFetch";
+
 const City = () => {
   const router = useRouter();
 
@@ -53,3 +53,11 @@ const City = () => {
 };
 
 export default City;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  //TODO: fet from url if city is real then redirect or send props
+  ctx.req.url;
+  return {
+    props: {},
+  };
+};
