@@ -1,13 +1,8 @@
 import useClickOutside from "@/utils/hooks/useClickOutside";
-import useTheme, { Theme } from "@/utils/hooks/useTheme";
-import {
-  faSun,
-  faMoon,
-  faDesktop,
-  faM,
-} from "@fortawesome/free-solid-svg-icons";
+import useTheme, { type Theme } from "@/utils/hooks/useTheme";
+import { faSun, faMoon, faDesktop } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 export default function Header() {
   const [mount, setMount] = useState(false);
 
