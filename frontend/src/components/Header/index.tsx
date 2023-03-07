@@ -56,7 +56,7 @@ export default function Header() {
               {renderIcon()}
             </button>
             {isVisible && (
-              <div className="form-control absolute w-full bg-neutral py-1 shadow">
+              <div className="form-control absolute z-50 w-full bg-neutral py-1 shadow">
                 <button
                   className={`btn ${theme === "light" ? "text-accent" : ""}`}
                   id="light"
