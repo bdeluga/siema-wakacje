@@ -14,6 +14,7 @@ type Props = {
 const Map = ({ position, markers }: Props) => {
   return (
     <MapContainer
+      //@ts-expect-error idk man leaflet sucks
       center={[position.lat, position.lng]}
       zoom={12}
       scrollWheelZoom={true}
