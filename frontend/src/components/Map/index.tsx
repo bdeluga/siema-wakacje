@@ -12,8 +12,8 @@ const Map = ({ lat, lng }: Coords) => {
       center={[lat, lng]}
       zoom={12}
       scrollWheelZoom={true}
-      className=" h-5/6 w-5/6 rounded-md "
       zoomControl={false}
+      className="h-full w-full"
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
     </MapContainer>
