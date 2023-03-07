@@ -1,18 +1,21 @@
+import Header from "@/components/Header";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import { GetServerSideProps } from "next/types";
-import FourOhFour from "../404";
+import type { GetServerSideProps } from "next/types";
+import { useState } from "react";
 
-const City = () => {
-  const router = useRouter();
+interface Props {
+  name: string;
+  lat: number;
+  lng: number;
+}
 
-  const { city, lat, lng } = router.query;
-  if (!lat || !lng) return <FourOhFour />;
-  console.log(Number(lat), Number(lng));
-  const Map = dynamic(() => import("@/components/leafletMap"), {
+const City = ({ name, lat, lng }: Props) => {
+  const [queryKey, setQueryKey] = useState("noclegi");
+
+  const Map = dynamic(() => import("@/components/Map"), {
     loading: () => (
       <div className="flex flex-col  gap-2 text-slate-100">
         <FontAwesomeIcon className="fa-spin text-4xl" icon={faCircleNotch} />
@@ -21,31 +24,63 @@ const City = () => {
     ),
     ssr: false,
   });
-  // const cities = useFetch();
-  // const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setQueryKey(e.currentTarget.id);
+  };
+
   return (
     <>
       <Head>
-        <title>{city}</title>
+        <title>{name}</title>
+        <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className=" flex h-screen min-h-screen w-screen bg-slate-700">
-        <div className="flex h-full w-1/2 flex-col p-32 pt-20 text-center">
-          {/* 
-          <input
-            ref={inputRef}
-            type={"text"}
-            className={` h-14 w-96 rounded-md  bg-slate-600 pl-2  text-xl text-slate-100 duration-500 ${
-              cities.error &&
-              "rounded-md border-2 border-l-[1rem] border-red-500"
-            }`}
-            value={`${city}`}
-            readOnly
-          /> */}
-          <h1 className="text-4xl text-slate-100  drop-shadow-md">{city}</h1>
-          <div className="mt-10 flex-grow "></div>
-        </div>
-        <div className="flex h-full w-1/2 items-center justify-center">
-          <Map lat={Number(lat)} lng={Number(lng)} />
+      <main className="form-control flex h-screen min-h-screen flex-col">
+        <Header />
+        <div className="my-4 flex flex-1 gap-10 p-10">
+          <div className="form-control w-1/2 items-center">
+            <div className="flex space-x-4">
+              <button
+                id="noclegi"
+                className={`btn rounded ${
+                  queryKey === "noclegi" ? "btn-primary" : "btn-secondary"
+                }`}
+                onClick={handleClick}
+              >
+                noclegi
+              </button>
+              <button
+                id="rekreacja"
+                className={`btn rounded ${
+                  queryKey === "rekreacja" ? "btn-primary" : "btn-secondary"
+                }`}
+                onClick={handleClick}
+              >
+                rekreacja
+              </button>
+              <button
+                id="historia"
+                className={`btn rounded ${
+                  queryKey === "historia" ? "btn-primary" : "btn-secondary"
+                }`}
+                onClick={handleClick}
+              >
+                historia
+              </button>
+              <button
+                id="restauracje"
+                className={`btn rounded ${
+                  queryKey === "restauracje" ? "btn-primary" : "btn-secondary"
+                }`}
+                onClick={handleClick}
+              >
+                restauracje
+              </button>
+            </div>
+          </div>
+          <div className=" z-40 flex w-1/2 items-center justify-center">
+            <Map lat={lat} lng={lng} />
+          </div>
         </div>
       </main>
     </>
@@ -56,8 +91,33 @@ export default City;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   //TODO: fet from url if city is real then redirect or send props
-  ctx.req.url;
+  const city = ctx.req.url?.split("/city/")[1];
+  if (!city) {
+    return {
+      redirect: { destination: "/404", permanent: false },
+    };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const foundCity = await fetch(
+    `http://127.0.0.1:8000/city/${city.toLowerCase()}`
+  ).then((res) => res.json());
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+  const { name, lat, lng } = foundCity.data[0];
+
+  if (!foundCity)
+    return {
+      redirect: { destination: "/404", permanent: false },
+    };
   return {
-    props: {},
+    props: {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      name,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      lat: Number(lat),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      lng: Number(lng),
+    },
   };
 };
