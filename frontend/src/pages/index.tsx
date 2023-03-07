@@ -1,11 +1,11 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import React, { useRef, useState } from "react";
-import Typer from "../components/Typer";
+import Typer from "@/components/Typer";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { useFetch } from "../utils/hooks/useFetch";
+import { useFetch } from "@/utils/hooks/useFetch";
 import debounce from "lodash/debounce";
 import Header from "@/components/Header";
 import type { City } from "@/utils/types";
@@ -52,7 +52,7 @@ const Home: NextPage = () => {
   }, 550);
 
   return (
-    <>
+    <div className="form-control h-full w-1/2 items-center ">
       <Head>
         <title>Siema Wakacje</title>
         <link rel="icon" href="/favicon.ico" />
@@ -94,7 +94,7 @@ const Home: NextPage = () => {
                   <>
                     {data.map((city, idx) => (
                       <button
-                        className="btn animate-none "
+                        className="btn animate-none"
                         key={idx}
                         onClick={() => {
                           if (inputRef.current)
@@ -113,7 +113,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       </main>
-    </>
+    </div>
   );
 };
 
