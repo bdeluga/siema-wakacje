@@ -52,7 +52,7 @@ const Home: NextPage = () => {
   }, 550);
 
   return (
-    <div className="form-control h-full w-1/2 items-center ">
+    <>
       <Head>
         <title>Siema Wakacje</title>
         <link rel="icon" href="/favicon.ico" />
@@ -113,7 +113,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       </main>
-    </div>
+    </>
   );
 };
 
