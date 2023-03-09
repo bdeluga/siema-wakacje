@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import type { GetServerSideProps } from "next/types";
-import CitySection from "./Section";
+import CitySection from "../../components/Section";
 interface Props {
   name: string;
   lat: number;
@@ -51,25 +51,31 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  //fetch city data from api server
   const foundCity = await fetch(
     `http://127.0.0.1:8000/city/${city.toLowerCase()}`
-  ).then((res) => res.json());
+  ).then(
+    (res) =>
+      res.json() as Promise<{
+        data: { name: string; lat: string; lng: string }[];
+      }>
+  );
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-  const { name, lat, lng } = foundCity.data[0];
-
-  if (!foundCity)
+  // not found, redirect to 404
+  if (!foundCity.data || !foundCity.data[0]) {
     return {
       redirect: { destination: "/404", permanent: false },
     };
+  }
+
+  //destructure data
+  const [{ name, lat, lng }] = foundCity.data;
+
+  //return props
   return {
     props: {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       name,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       lat: Number(lat),
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       lng: Number(lng),
     },
   };
