@@ -11,6 +11,7 @@ import Header from "@/components/Header";
 import type { City } from "@/utils/types";
 import type { AxiosError, AxiosResponse } from "axios";
 import { useToastStore } from "@/useStore";
+import { CitySkeleton } from "@/components/Skeleton";
 
 const Home: NextPage = () => {
   const { show } = useToastStore();
@@ -84,12 +85,7 @@ const Home: NextPage = () => {
             {city.isFetching || data.length ? (
               <div className="scrollbar card mt-1 flex max-h-56 w-full flex-col space-y-1 overflow-y-auto rounded-sm bg-base-100 p-1">
                 {city.isFetching ? (
-                  <>
-                    <button className="btn pointer-events-none animate-pulse border-none bg-base-300" />
-                    <button className="btn pointer-events-none animate-pulse border-none bg-base-300" />
-                    <button className="btn pointer-events-none animate-pulse border-none bg-base-300" />
-                    <button className="btn pointer-events-none animate-pulse border-none bg-base-300" />
-                  </>
+                  <CitySkeleton count={4} />
                 ) : (
                   <>
                     {data.map((city, idx) => (
