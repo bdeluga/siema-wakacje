@@ -1,0 +1,2 @@
+http://127.0.0.1:8000/<nazwaMiasta>/hotels - wszystkie rodzaje zakwaterowań od hosteli po hotele
+http://127.0.0.1:8000/<nazwaMiasta>/architecture - wszystkie rodzaje architektury (stare budynki, zniszczone budynki, mosty, wieze)

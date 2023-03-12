@@ -12,7 +12,7 @@ from django.shortcuts import render
 # przyklad: siemawakacje.pl/city/...
 # i tylko tu cos robicie
 urlpatterns = [
-    re_path(r'^(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?]*)/hotels/$', views.hotelsResponseView),
+    re_path(r'^(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?]*)/(?P<place>[a-zA-Z]*)/?$', views.placesResponseView),
     re_path(r'^city/($)|^city/(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?]*)/?$', views.cityQueryView),
     re_path(r'^($)|(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?]*)/$', views.cityPageView)
 ]
