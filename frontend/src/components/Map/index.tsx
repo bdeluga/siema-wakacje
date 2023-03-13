@@ -1,6 +1,5 @@
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { memo } from "react";
 
 interface Coords {
   lat: number;
@@ -11,13 +10,13 @@ type Props = {
   markers?: Coords[];
 };
 
-const Map = ({ position, markers }: Props) => {
+export default function Map({ position, markers }: Props) {
   return (
     <MapContainer
-      //@ts-expect-error idk man leaflet sucks
       center={[position.lat, position.lng]}
       zoom={12}
       scrollWheelZoom={true}
+      attributionControl={false}
       zoomControl={false}
       className="h-full w-full"
     >
@@ -27,8 +26,4 @@ const Map = ({ position, markers }: Props) => {
       ))}
     </MapContainer>
   );
-};
-
-const MemoizedMap = memo(Map);
-
-export default MemoizedMap;
+}
