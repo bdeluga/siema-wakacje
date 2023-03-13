@@ -5,55 +5,58 @@ import csv
 import os
 import json
 import osmnx as ox
-import pandas
 import requests
-import math
 
-def hotelsResponseView(request, cityName):
-    
-    # city name from path
-    city = cityName.upper()
-    # prevent to pass favicon.ico or empty string to nominatim request
-    if city == '' or city == 'favicon.ico':
-        return HttpResponse(status=200)
-    # search for hotels only
-    tags = {'amenity': 'hotel',
-            'building': 'hotel',
-            'tourism': 'hotel'}
-    # geodataframe with response
-    hotelResponse = ox.geometries_from_place(city, tags=tags)
-    # dictionary for clean data to return
-    hotels = {'hotels': []}
-    # iterate over geodataframe and append names to respone dictionary
-    # save as much hotels as possible :(
-    # bcs for requests are used free tools
-    # its necessary to look through all data and recover NaN data if possible 
-    for ind in hotelResponse.index:
-        hotel = {}
-        # check for NaN value
-        if hotelResponse['name'][ind] != hotelResponse['name'][ind]:
-            # check if geometries are Points
-            if hotelResponse['geometry'][ind].geom_type == 'Point':
-                # creating string with lat and lng
-                place = str(hotelResponse['geometry'][ind].y) + ', ' + str(hotelResponse['geometry'][ind].x)
-                # repeat request but now its concentrating to 500m around point(place)
-                simpleResp = ox.geometries_from_place(place, tags=tags, buffer_dist=500)
-                hotel['name'] = simpleResp['name'][0]
-                hotels['hotels'].append(hotel)
-            # check if geometries are Polygons
-            if hotelResponse['geometry'][ind].geom_type == 'Polygon':
-                # repeat request but in specified polygon
-                simpleResp = ox.geometries_from_polygon(hotelResponse['geometry'][ind], tags=tags)
-                # unfortunetly since simpleResp may not contain hotel name
-                # its necessary to look into dataframe and reject data without name column
-                if 'name' in simpleResp.columns:
-                    hotel['name'] = simpleResp['name'][0]
-                    hotels['hotels'].append(hotel)
-        # if there is no NaN value then just append it to response dict            
-        else:
-            hotel['name'] = hotelResponse['name'][ind]
-            hotels['hotels'].append(hotel)
-    return JsonResponse(hotels)
+def placesResponseView(request, cityName, place):
+    cityName = cityName.upper()
+    worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
+    lat = -1
+    lng = -1
+    with open(worldCities, encoding='utf8') as data:
+            for row in data:
+                if (((row.split(',')[0])[1:-1]).upper()).startswith(cityName):
+                    lat = (row.split(',')[2])[1:-1]
+                    lng = (row.split(',')[3])[1:-1]
+    if place == 'hotels':
+        result = []
+        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=accomodations&format=json&apikey={settings.TRIP_KEY}'
+        data = (requests.get(url)).json()
+        for ind in data:
+            if ind['name'] == '':
+                continue
+            if 'xid' in ind:
+                del ind['xid']
+            if 'dist' in ind:
+                del ind['dist']
+            if 'osm' in ind:
+                del ind['osm']
+            if 'kinds' in ind:
+                del ind['kinds']            
+            result.append(ind)            
+        return JsonResponse(result, safe=False)
+    if place == 'architecture':
+        result = []
+        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=architecture&format=json&apikey={settings.TRIP_KEY}'
+        data = (requests.get(url)).json()
+        for ind in data:
+            place = {}
+            if 'Street' in ind['name'] or ind['name'] == '':
+                continue
+            place['name'] = ind['name']
+            place['rate'] = ind['rate']
+            place['point'] = ind['point']
+            url2 = f'https://api.opentripmap.com/0.1/en/places/xid/{ind["xid"]}?apikey={settings.TRIP_KEY}'
+            data2 = (requests.get(url2)).json()
+            if 'preview' in data2:
+                if 'source' in data2['preview']:
+                    place['img1'] = data2['preview']['source']
+            if 'image' in data2:
+                place['img2'] = data2['image']
+            else:
+                place['img'] = 'None'               
+            result.append(place)
+        return JsonResponse(result, safe=False)
+    return HttpResponse('nieelo')
 
 def cityPageView(request, cityName=''):
 
