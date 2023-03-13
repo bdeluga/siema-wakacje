@@ -31,7 +31,7 @@ const City = ({ name, lat, lng }: Props) => {
       <main className="form-control flex h-screen flex-col">
         <Header />
         <div className="m-10 flex flex-1 gap-10 overflow-hidden ">
-          <CitySection name={name} />
+          <CitySection />
           <div className="z-40 flex w-1/2 items-center justify-center">
             <Map position={{ lat, lng }} />
           </div>
