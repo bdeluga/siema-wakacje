@@ -5,6 +5,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
+import type { Hotel } from "@/utils/types";
 
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
@@ -21,10 +22,6 @@ export const exampleRouter = createTRPCRouter({
 
   fetch: publicProcedure.input(z.string()).query(async ({ input }) => {
     const res = await fetch(`http://127.0.0.1:8000/${input}`);
-    return res.json() as Promise<{
-      hotels: {
-        name: string;
-      }[];
-    }>;
+    return res.json() as Promise<Hotel[]>;
   }),
 });
