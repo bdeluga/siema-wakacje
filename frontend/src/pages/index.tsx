@@ -82,7 +82,7 @@ const Home: NextPage = () => {
               </button>
             </div>
 
-            {city.isFetching || data.length ? (
+            {city.isFetching || data?.length ? (
               <div className="scrollbar card mt-1 flex max-h-56 w-full flex-col space-y-1 overflow-y-auto rounded-sm bg-base-100 p-1">
                 {city.isFetching ? (
                   <CitySkeleton count={4} />

@@ -67,8 +67,7 @@ const Section = () => {
             <HotelSkeleton count={5} />
           </>
         ) : (
-          data &&
-          data.hotels.map((hotel, idx) => (
+          data?.map((hotel, idx) => (
             <div className="btn-ghost flex p-4" key={idx}>
               <div className="mr-4 flex h-full items-center justify-center">
                 <div className="avatar">
@@ -93,8 +92,8 @@ const Section = () => {
                 </p>
               </div>
               <div className="form-control h-full justify-between">
-                <Rating rating={2} />
-                <span className="btn">200zł/noc</span>
+                <Rating rating={hotel.rate} />
+                <span className="btn">brak ceny</span>
               </div>
             </div>
           ))
