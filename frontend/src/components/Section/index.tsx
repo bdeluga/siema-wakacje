@@ -3,15 +3,15 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { HotelSkeleton } from "@/components/Skeleton";
 import Rating from "./Rating";
-type Props = {
-  name: string;
-};
+import { useRouter } from "next/router";
 
-const Section = ({ name }: Props) => {
+const Section = () => {
+  const city = useRouter().query.city as string;
+
   const [queryKey, setQueryKey] = useState("hotels");
 
   const { data, isFetching } = api.example.fetch.useQuery(
-    `${name}/${queryKey}`,
+    `${city}/${queryKey}`,
     {
       refetchOnWindowFocus: false,
     }
@@ -93,7 +93,7 @@ const Section = ({ name }: Props) => {
                 </p>
               </div>
               <div className="form-control h-full justify-between">
-                <Rating rating={3} />
+                <Rating rating={2} />
                 <span className="btn">200zł/noc</span>
               </div>
             </div>
