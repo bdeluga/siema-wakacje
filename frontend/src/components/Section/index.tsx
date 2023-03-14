@@ -1,68 +1,19 @@
-import { api } from "@/utils/api";
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { HotelSkeleton } from "@/components/Skeleton";
 import Rating from "./Rating";
-import { useRouter } from "next/router";
 
-const Section = () => {
-  const city = useRouter().query.city as string;
+import type { Hotel } from "@/utils/types";
 
-  const [queryKey, setQueryKey] = useState("hotels");
+interface Props {
+  data: Hotel[] | undefined;
+}
 
-  const { data, isFetching } = api.example.fetch.useQuery(
-    `${city}/${queryKey}`,
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
-
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setQueryKey(e.currentTarget.id);
-  };
-
+const Section = ({ data }: Props) => {
   return (
-    <div className="form-control h-full w-1/2 items-center ">
-      <div className="mt-2 flex space-x-4">
-        <button
-          id="hotels"
-          className={`btn rounded ${
-            queryKey === "hotels" ? "btn-primary" : "btn-secondary"
-          }`}
-          onClick={handleClick}
-        >
-          noclegi
-        </button>
-        <button
-          id="recreations"
-          className={`btn rounded ${
-            queryKey === "recreations" ? "btn-primary" : "btn-secondary"
-          }`}
-          onClick={handleClick}
-        >
-          rekreacja
-        </button>
-        <button
-          id="history"
-          className={`btn rounded ${
-            queryKey === "history" ? "btn-primary" : "btn-secondary"
-          }`}
-          onClick={handleClick}
-        >
-          historia
-        </button>
-        <button
-          id="restaurants"
-          className={`btn rounded ${
-            queryKey === "restaurants" ? "btn-primary" : "btn-secondary"
-          }`}
-          onClick={handleClick}
-        >
-          restauracje
-        </button>
-      </div>
+    <div className="form-control h-full items-center pb-14 ">
       <div className="scrollbar mt-4 grid h-full w-full gap-4 overflow-y-auto overflow-x-hidden ">
-        {isFetching ? (
+        {!data ? (
           <>
             <HotelSkeleton count={5} />
           </>
