@@ -14,3 +14,8 @@ export interface Hotel {
     lng: number;
   };
 }
+
+export interface Point {
+  lat: number;
+  lng: number;
+}
