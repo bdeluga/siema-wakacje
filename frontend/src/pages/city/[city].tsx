@@ -1,13 +1,12 @@
 import Header from "@/components/Header";
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import type { GetServerSideProps } from "next/types";
-import { useState } from "react";
 import CitySection from "../../components/Section";
 import { api } from "@/utils/api";
-
+import QueryButtons from "@/components/QueryButtons";
+import { useQueryKeyStore } from "@/useStore";
 interface Props {
   name: string;
   lat: number;
@@ -16,24 +15,15 @@ interface Props {
 
 const City = ({ name, lat, lng }: Props) => {
   const Map = dynamic(() => import("@/components/Map"), {
-    loading: () => (
-      <div className="flex flex-col  gap-2 text-slate-100">
-        <FontAwesomeIcon className="fa-spin text-4xl" icon={faCircleNotch} />
-        <span>Wczytywanie mapy...</span>
-      </div>
-    ),
     ssr: false,
   });
 
-  const [queryKey, setQueryKey] = useState("hotels");
+  const { queryKey } = useQueryKeyStore();
 
   const { data } = api.example.fetch.useQuery(`${name}/${queryKey}`, {
     refetchOnWindowFocus: false,
   });
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setQueryKey(e.currentTarget.id);
-  };
   return (
     <>
       <Head>
@@ -44,44 +34,7 @@ const City = ({ name, lat, lng }: Props) => {
         <Header />
         <div className=" m-10  flex flex-1 gap-10 overflow-hidden ">
           <div className="form-control w-1/2">
-            <div className="mx-auto mt-2 flex space-x-4">
-              <button
-                id="hotels"
-                className={`btn rounded ${
-                  queryKey === "hotels" ? "btn-primary" : "btn-secondary"
-                }`}
-                onClick={handleClick}
-              >
-                noclegi
-              </button>
-              <button
-                id="recreations"
-                className={`btn rounded ${
-                  queryKey === "recreations" ? "btn-primary" : "btn-secondary"
-                }`}
-                onClick={handleClick}
-              >
-                rekreacja
-              </button>
-              <button
-                id="history"
-                className={`btn rounded ${
-                  queryKey === "history" ? "btn-primary" : "btn-secondary"
-                }`}
-                onClick={handleClick}
-              >
-                historia
-              </button>
-              <button
-                id="restaurants"
-                className={`btn rounded ${
-                  queryKey === "restaurants" ? "btn-primary" : "btn-secondary"
-                }`}
-                onClick={handleClick}
-              >
-                restauracje
-              </button>
-            </div>
+            <QueryButtons />
             <CitySection data={data} />
           </div>
           <div className="z-40 flex w-1/2 items-center justify-center">
