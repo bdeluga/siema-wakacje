@@ -1,9 +1,9 @@
 import { create } from "zustand";
 
-type ToastMessage = {
+interface ToastMessage {
   type: "error" | "success" | "warning" | "info";
   text: string | null;
-};
+}
 
 interface ToastState {
   message: ToastMessage;
@@ -19,4 +19,14 @@ export const useToastStore = create<ToastState>((set) => ({
     set(() => ({
       message: toastObj,
     })),
+}));
+
+interface QueryKey {
+  queryKey: string;
+  setKey: (key: string) => void;
+}
+
+export const useQueryKeyStore = create<QueryKey>((set) => ({
+  queryKey: "hotels",
+  setKey: (key) => set(() => ({ queryKey: key })),
 }));
