@@ -11,7 +11,7 @@ export interface Hotel {
   rate: number;
   point: {
     lat: number;
-    lng: number;
+    log: number;
   };
 }
 
