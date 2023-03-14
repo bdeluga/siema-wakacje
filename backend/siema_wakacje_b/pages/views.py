@@ -6,6 +6,66 @@ import os
 import json
 import osmnx as ox
 import requests
+import sqlite3
+
+
+
+
+def positionOfCity(cityName):
+    worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
+    lat = -1
+    lng = -1
+    with open(worldCities, encoding='utf8') as data:
+            for row in data:
+                if (((row.split(',')[0])[1:-1]).upper()).startswith(cityName):
+                    lat = (row.split(',')[2])[1:-1]
+                    lng = (row.split(',')[3])[1:-1]
+    return lat,lng
+
+def dbInsertion(cityName):
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+    cur = con.cursor()
+    lat,lng=positionOfCity(cityName)
+    check=[]
+    # creating list of names that already are in database
+    for row in cur.execute("SELECT name FROM city"):
+        check.append(row[0])
+    # updating db if there is no city
+    if cityName.upper() not in check:        
+        cur.execute("INSERT INTO city VALUES(?,?,?)",
+        (cityName.upper(),lng,lat))
+        con.commit()        
+        print(":D")
+
+        url_acomodation = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=accomodations&format=json&apikey={settings.TRIP_KEY}'
+        data_acomodation = (requests.get(url_acomodation)).json()
+        for data in data_acomodation:
+            cur.execute("INSERT INTO hotels VALUES(?,?,?,?,?)",
+            (data['name'],data['rate'],data['kinds'],data['point']['lon'],data['point']['lat']))
+            con.commit()
+        url_restaurants = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=foods&format=json&apikey={settings.TRIP_KEY}'
+        data_restaurants = (requests.get(url_restaurants)).json()
+        for data in data_restaurants:
+            cur.execute("INSERT INTO restaurants VALUES(?,?,?,?,?)",
+            (data['name'],data['rate'],data['kinds'],data['point']['lon'],data['point']['lat']))
+            con.commit()
+        url_historic = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=historic&format=json&apikey={settings.TRIP_KEY}'
+        data_historic = (requests.get(url_historic)).json()
+        for data in data_historic:
+            cur.execute("INSERT INTO historic VALUES(?,?,?,?,?)",
+            (data['name'],data['rate'],data['kinds'],data['point']['lon'],data['point']['lat']))
+            con.commit()
+            print(":D")
+        url_recreation = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=architecture&format=json&apikey={settings.TRIP_KEY}'
+        data_recreation = (requests.get(url_recreation)).json()
+        for data in data_recreation:
+            cur.execute("INSERT INTO recreation VALUES(?,?,?,?,?)",
+            (data['name'],data['rate'],data['kinds'],data['point']['lon'],data['point']['lat']))
+            con.commit()
+def dbSelect(columnName):
+    for row in cur.execute(f"SELECT * FROM '{columnName}'"):
+        print(row)
+
 
 def placesResponseView(request, cityName, place):
     cityName = cityName.upper()

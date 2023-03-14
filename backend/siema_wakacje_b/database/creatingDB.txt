@@ -1,0 +1,6 @@
+sqlite3 Project.db
+create table historic(name text, rate int,kinds text, lon text,lat text);
+create table hotels(name text, rate int,kinds text, lon text,lat text);
+create table recreation(name text, rate int,kinds text, lon text,lat text);
+create table restaurants(name text, rate int,kinds text, lon text,lat text);
+create table city(name text,lon text,lat text);
