@@ -1,6 +1,6 @@
 sqlite3 Project.db
-create table historic(name text, rate int,kinds text, lon text,lat text);
-create table hotels(name text, rate int,kinds text, lon text,lat text);
-create table recreation(name text, rate int,kinds text, lon text,lat text);
-create table restaurants(name text, rate int,kinds text, lon text,lat text);
-create table city(name text,lon text,lat text);
+create table city(cityid int PRIMARY KEY,name text,iso text,lon float,lat float);
+create table place(id int PRIMARY KEY,name text, rate int,kinds text,wikidata text,cityid int, lon float,lat float,
+FOREIGN KEY (cityid) 
+REFERENCES city(cityid) 
+);
