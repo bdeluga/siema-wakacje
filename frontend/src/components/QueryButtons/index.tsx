@@ -41,6 +41,15 @@ const QueryButtons = () => {
       >
         restauracje
       </button>
+      <button
+        id="fun"
+        className={`btn rounded ${
+          queryKey === "fun" ? "btn-primary" : "btn-secondary"
+        }`}
+        onClick={(e) => setKey(e.currentTarget.id)}
+      >
+        zabawa
+      </button>
     </div>
   );
 };
