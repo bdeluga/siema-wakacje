@@ -5,6 +5,9 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import "leaflet-defaulticon-compatibility";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
+import { useQueryKeyStore } from "@/useStore";
+import L from "leaflet";
 
 type Props = {
   position: Point;
@@ -19,11 +22,17 @@ export default function Map({ position, markers }: Props) {
         <span>Wczytywanie mapy...</span>
       </div>
     );
+  const { queryKey } = useQueryKeyStore();
+
+  const markerIcon = new L.Icon({
+    iconUrl: `/markers/${queryKey}.svg`,
+    iconSize: [40, 40],
+  });
 
   return (
     <MapContainer
       center={[position.lat, position.lng]}
-      zoom={12}
+      zoom={16}
       scrollWheelZoom={true}
       attributionControl={false}
       zoomControl={false}
@@ -32,7 +41,11 @@ export default function Map({ position, markers }: Props) {
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
       {markers?.map((marker, idx) => (
-        <Marker key={idx} position={[marker.lat, marker.lon]} />
+        <Marker
+          key={idx}
+          position={[marker.lat, marker.lon]}
+          icon={markerIcon}
+        />
       ))}
     </MapContainer>
   );
