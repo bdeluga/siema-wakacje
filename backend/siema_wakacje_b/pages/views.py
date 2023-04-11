@@ -35,33 +35,32 @@ def dbInsertion(cityName):
         cur.execute("INSERT INTO city VALUES(?,?,?)",
         (cityName.upper(),lng,lat))
         con.commit()        
-        print(":D")
-
-        url_acomodation = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=accomodations&format=json&apikey={settings.TRIP_KEY}'
-        data_acomodation = (requests.get(url_acomodation)).json()
-        for data in data_acomodation:
-            cur.execute("INSERT INTO hotels VALUES(?,?,?,?,?)",
-            (data['name'],data['rate'],data['kinds'],data['point']['lon'],data['point']['lat']))
-            con.commit()
-        url_restaurants = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=foods&format=json&apikey={settings.TRIP_KEY}'
-        data_restaurants = (requests.get(url_restaurants)).json()
-        for data in data_restaurants:
-            cur.execute("INSERT INTO restaurants VALUES(?,?,?,?,?)",
-            (data['name'],data['rate'],data['kinds'],data['point']['lon'],data['point']['lat']))
-            con.commit()
-        url_historic = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=historic&format=json&apikey={settings.TRIP_KEY}'
-        data_historic = (requests.get(url_historic)).json()
-        for data in data_historic:
-            cur.execute("INSERT INTO historic VALUES(?,?,?,?,?)",
-            (data['name'],data['rate'],data['kinds'],data['point']['lon'],data['point']['lat']))
-            con.commit()
-            print(":D")
-        url_recreation = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=architecture&format=json&apikey={settings.TRIP_KEY}'
-        data_recreation = (requests.get(url_recreation)).json()
-        for data in data_recreation:
-            cur.execute("INSERT INTO recreation VALUES(?,?,?,?,?)",
-            (data['name'],data['rate'],data['kinds'],data['point']['lon'],data['point']['lat']))
-            con.commit()
+        url_acomodation1 = f'https://api.opentripmap.com/0.1/en/places/radius?radius=20000&lon={lng}&lat={lat}&kinds=alcohol,casino,nightclubs,hookah,foods,accomodations,museums,bridges,historic_architecture,lighthouses,towers,archaeology,burial_places,fortifications,historical_places,monuments_and_memorials,religion&format=json&apikey={settings.TRIP_KEY}'
+        data_acomodation1 = (requests.get(url_acomodation1)).json()
+        k=1
+        for data in data_acomodation1:
+            if "wikidata" in data.keys():
+                print("XD")
+                cur.execute("INSERT INTO place VALUES(?,?,?,?,?,?,?,?)",
+                (k,data['name'],data['rate'],data['kinds'],data['wikidata'],1,data['point']['lon'],data['point']['lat']))
+                k+=1
+            else:
+                cur.execute("INSERT INTO place VALUES(?,?,?,?,?,?,?,?)",
+                (k,data['name'],data['rate'],data['kinds'],'',1,data['point']['lon'],data['point']['lat']))
+                k+=1
+        con.commit()
+        url_acomodation2 = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=amusement_parks,ferris_wheels,miniature_parks,water_parks,baths_and_saunas,theatres_and_entertainments,urban_environment,gardens_and_parks,fountains,beaches,geological_formations,natural_springs,nature_reserves,water,view_points,sport,bicycle_rental&format=json&apikey={settings.TRIP_KEY}'
+        data_acomodation2 = (requests.get(url_acomodation2)).json()
+        for data in data_acomodation2:
+            if "wikidata" in data.keys():
+                cur.execute("INSERT INTO place VALUES(?,?,?,?,?,?,?,?)",
+                (k,data['name'],data['rate'],data['kinds'],data['wikidata'],1,data['point']['lon'],data['point']['lat']))
+                k+=1
+            else:
+                cur.execute("INSERT INTO place VALUES(?,?,?,?,?,?,?,?)",
+                (k,data['name'],data['rate'],data['kinds'],'',1,data['point']['lon'],data['point']['lat']))
+                k+=1
+        con.commit()
 def dbSelect(columnName):
     for row in cur.execute(f"SELECT * FROM '{columnName}'"):
         print(row)
