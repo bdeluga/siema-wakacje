@@ -1,2 +1,6 @@
-http://127.0.0.1:8000/<nazwaMiasta>/hotels - wszystkie rodzaje zakwaterowań od hosteli po hotele
-http://127.0.0.1:8000/<nazwaMiasta>/architecture - wszystkie rodzaje architektury (stare budynki, zniszczone budynki, mosty, wieze)
+http://127.0.0.1:8000/<nazwaMiasta>/hotels - wszystkie rodzaje zakwaterowań od hosteli po hotele.
+http://127.0.0.1:8000/<nazwaMiasta>/night_life - wszystkie rodzaje budynków dla dorosłych ( ͡° ͜ʖ ͡°).
+http://127.0.0.1:8000/<nazwaMiasta>/recreations - wszystkie rodzaje obiektów związanych z rekreacją.
+http://127.0.0.1:8000/<nazwaMiasta>/restaurants - wszelkiego rodzaju restauracje.
+http://127.0.0.1:8000/<nazwaMiasta>/fun - wszelkiego rodzaju atrakcje podnoszące poziom zadowolenia użytkownika.
+http://127.0.0.1:8000/<nazwaMiasta>/history - Obiekty powiązane w jakiś sposób z historią, oraz obiekty religijne.

@@ -88,33 +88,107 @@ def placesResponseView(request, cityName, place):
             if 'dist' in ind:
                 del ind['dist']
             if 'osm' in ind:
-                del ind['osm']
-            if 'kinds' in ind:
-                del ind['kinds']            
+                del ind['osm']        
             result.append(ind)            
         return JsonResponse(result, safe=False)
-    if place == 'architecture':
+    if place == 'fun':
         result = []
-        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=architecture&format=json&apikey={settings.TRIP_KEY}'
+        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=amusement_parks,ferris_wheels,miniature_parks,water_parks,baths_and_saunas,theatres_and_entertainments,urban_environment&format=json&apikey={settings.TRIP_KEY}'
         data = (requests.get(url)).json()
         for ind in data:
-            place = {}
-            if 'Street' in ind['name'] or ind['name'] == '':
+            if ind['name'] == '':
                 continue
-            place['name'] = ind['name']
-            place['rate'] = ind['rate']
-            place['point'] = ind['point']
-            url2 = f'https://api.opentripmap.com/0.1/en/places/xid/{ind["xid"]}?apikey={settings.TRIP_KEY}'
-            data2 = (requests.get(url2)).json()
-            if 'preview' in data2:
-                if 'source' in data2['preview']:
-                    place['img1'] = data2['preview']['source']
-            if 'image' in data2:
-                place['img2'] = data2['image']
-            else:
-                place['img'] = 'None'               
-            result.append(place)
+            if 'xid' in ind:
+                del ind['xid']
+            if 'dist' in ind:
+                del ind['dist']
+            if 'osm' in ind:
+                del ind['osm']         
+            result.append(ind)            
         return JsonResponse(result, safe=False)
+    if place == 'recreations':
+        result = []
+        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=gardens_and_parks,fountains,beaches,geological_formations,natural_springs,nature_reserves,water,view_points,sport,bicycle_rental&format=json&apikey={settings.TRIP_KEY}'
+        data = (requests.get(url)).json()
+        for ind in data:
+            if ind['name'] == '':
+                continue
+            if 'xid' in ind:
+                del ind['xid']
+            if 'dist' in ind:
+                del ind['dist']
+            if 'osm' in ind:
+                del ind['osm']          
+            result.append(ind)            
+        return JsonResponse(result, safe=False)
+    if place == 'night_life':
+        result = []
+        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=alcohol,casino,nightclubs,hookah&format=json&apikey={settings.TRIP_KEY}'
+        data = (requests.get(url)).json()
+        for ind in data:
+            if ind['name'] == '':
+                continue
+            if 'xid' in ind:
+                del ind['xid']
+            if 'dist' in ind:
+                del ind['dist']
+            if 'osm' in ind:
+                del ind['osm']         
+            result.append(ind)            
+        return JsonResponse(result, safe=False)
+    if place == 'restaurants':
+        result = []
+        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=foods&format=json&apikey={settings.TRIP_KEY}'
+        data = (requests.get(url)).json()
+        for ind in data:
+            if ind['name'] == '':
+                continue
+            if 'xid' in ind:
+                del ind['xid']
+            if 'dist' in ind:
+                del ind['dist']
+            if 'osm' in ind:
+                del ind['osm']         
+            result.append(ind)            
+        return JsonResponse(result, safe=False)
+    if place == 'history':
+        result = []
+        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=museums,bridges,historic_architecture,lighthouses,towers,archaeology,burial_places,fortifications,historical_places,monuments_and_memorials,religion&format=json&apikey={settings.TRIP_KEY}'
+        data = (requests.get(url)).json()
+        for ind in data:
+            if ind['name'] == '':
+                continue
+            if 'xid' in ind:
+                del ind['xid']
+            if 'dist' in ind:
+                del ind['dist']
+            if 'osm' in ind:
+                del ind['osm']         
+            result.append(ind)            
+        return JsonResponse(result, safe=False)
+    # Maćkowy good job to zostawie
+    # if place == 'recreations':
+    #     result = []
+    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=architecture&format=json&apikey={settings.TRIP_KEY}'
+    #     data = (requests.get(url)).json()
+    #     for ind in data:
+    #         place = {}
+    #         if 'Street' in ind['name'] or ind['name'] == '':
+    #             continue
+    #         place['name'] = ind['name']
+    #         place['rate'] = ind['rate']
+    #         place['point'] = ind['point']
+    #         url2 = f'https://api.opentripmap.com/0.1/en/places/xid/{ind["xid"]}?apikey={settings.TRIP_KEY}'
+    #         data2 = (requests.get(url2)).json()
+    #         if 'preview' in data2:
+    #             if 'source' in data2['preview']:
+    #                 place['img1'] = data2['preview']['source']
+    #         if 'image' in data2:
+    #             place['img2'] = data2['image']
+    #         else:
+    #             place['img'] = 'None'               
+    #         result.append(place)
+    #     return JsonResponse(result, safe=False)
     return HttpResponse('nieelo')
 
 def cityPageView(request, cityName=''):
