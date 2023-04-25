@@ -25,7 +25,7 @@ export default function Map({ position, markers }: Props) {
   const { queryKey } = useQueryKeyStore();
 
   const markerIcon = new L.Icon({
-    iconUrl: `/markers/${queryKey}.svg`,
+    iconUrl: `/markers/${queryKey}.png`,
     iconSize: [40, 40],
   });
 
