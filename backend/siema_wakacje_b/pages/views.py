@@ -83,6 +83,8 @@ def placesResponseView(request, cityName, place):
         for ind in data:
             if ind['name'] == '':
                 continue
+            if ind['rate'] <= 1:
+                continue
             if 'xid' in ind:
                 del ind['xid']
             if 'dist' in ind:
@@ -97,6 +99,8 @@ def placesResponseView(request, cityName, place):
         data = (requests.get(url)).json()
         for ind in data:
             if ind['name'] == '':
+                continue
+            if ind['rate'] <= 1:
                 continue
             if 'xid' in ind:
                 del ind['xid']
@@ -113,6 +117,8 @@ def placesResponseView(request, cityName, place):
         for ind in data:
             if ind['name'] == '':
                 continue
+            if ind['rate'] <= 1:
+                continue
             if 'xid' in ind:
                 del ind['xid']
             if 'dist' in ind:
@@ -127,6 +133,8 @@ def placesResponseView(request, cityName, place):
         data = (requests.get(url)).json()
         for ind in data:
             if ind['name'] == '':
+                continue
+            if ind['rate'] <= 1:
                 continue
             if 'xid' in ind:
                 del ind['xid']
@@ -143,6 +151,8 @@ def placesResponseView(request, cityName, place):
         for ind in data:
             if ind['name'] == '':
                 continue
+            if ind['rate'] <= 1:
+                continue
             if 'xid' in ind:
                 del ind['xid']
             if 'dist' in ind:
@@ -157,6 +167,8 @@ def placesResponseView(request, cityName, place):
         data = (requests.get(url)).json()
         for ind in data:
             if ind['name'] == '':
+                continue
+            if ind['rate'] <= 1:
                 continue
             if 'xid' in ind:
                 del ind['xid']
@@ -174,6 +186,8 @@ def placesResponseView(request, cityName, place):
     #     for ind in data:
     #         place = {}
     #         if 'Street' in ind['name'] or ind['name'] == '':
+    #             continue
+    #         if ind['rate'] <= 1:
     #             continue
     #         place['name'] = ind['name']
     #         place['rate'] = ind['rate']
