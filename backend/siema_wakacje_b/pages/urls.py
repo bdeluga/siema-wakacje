@@ -13,9 +13,9 @@ from django.shortcuts import render
 # i tylko tu cos robicie
 urlpatterns = [
     re_path(
-        r'^city/($)|^city/(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?]*)/?$', views.cityQueryView),
+        r'^city/($)|^city/(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/?$', views.cityQueryView),
     re_path(
-        r'^(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?]*)/(?P<place>[a-zA-Z]*)/?$', views.placesResponseView),
+        r'^(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/(?P<place>[a-zA-Z]*)/?$', views.placesResponseView),
     re_path(
         r'^($)|(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?]*)/$', views.cityPageView)
 ]
