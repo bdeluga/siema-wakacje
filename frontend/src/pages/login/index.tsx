@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
 import { type FormEvent, useState } from "react";
 
 interface formData {
@@ -8,6 +9,7 @@ interface formData {
 }
 
 export default function Login() {
+  const router = useRouter();
   const [formData, setFormData] = useState<formData>({
     email: "",
     password: "",
@@ -16,17 +18,15 @@ export default function Login() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsFetching(true);
-    try {
-      await signIn("credentials", {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
-      });
-    } catch (error) {
-      console.error(error);
-      // handle error here
-    }
+    const res = await signIn("credentials", {
+      email: formData.email,
+      password: formData.password,
+      redirect: false,
+    });
     setIsFetching(false);
+    if (res?.ok) {
+      await router.push("/");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
