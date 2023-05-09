@@ -3,9 +3,7 @@ import useTheme, { type Theme } from "@/utils/hooks/useTheme";
 import { faSun, faMoon, faDesktop } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import UserBadge from "./UserBadge";
 export default function Header() {
