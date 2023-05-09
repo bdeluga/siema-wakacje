@@ -2,6 +2,8 @@ import useClickOutside from "@/utils/hooks/useClickOutside";
 import useTheme, { type Theme } from "@/utils/hooks/useTheme";
 import { faSun, faMoon, faDesktop } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 export default function Header() {
   const [mount, setMount] = useState(false);
@@ -36,12 +38,21 @@ export default function Header() {
   };
 
   const { isVisible, ref, setIsVisible } = useClickOutside();
+  const { pathname } = useRouter();
 
   return (
-    <header className="mt-4 flex h-12 w-full items-center   justify-end gap-4 pr-4">
+    <header className="mt-4 flex h-12 w-full items-center justify-end gap-4 pr-4">
       {mount && (
         <>
-          <button className="btn">Zaloguj się!</button>
+          {pathname !== "/login" ? (
+            <Link className="btn" href={"/login"}>
+              Zaloguj się!
+            </Link>
+          ) : (
+            <Link className="btn" href={"/"}>
+              Home
+            </Link>
+          )}
 
           <div ref={ref} className="relative">
             <button
