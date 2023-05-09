@@ -37,11 +37,16 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
-        // session.user.role = user.role; <-- put other properties on the session here
+    jwt({ token, account, user }) {
+      if (account) {
+        token.accessToken = account.access_token;
+        token.id = user?.id;
       }
+      return token;
+    },
+    session({ session, token }) {
+      session.user.id = token.id as string;
+
       return session;
     },
   },
@@ -53,20 +58,20 @@ export const authOptions: NextAuthOptions = {
           email: string;
           password: string;
         };
-        if (email !== "jan.kowalski@gmail.com" || password !== "Test123!")
+        if (email !== "jan.kowalski@gmail.com" || password !== "Test123!") {
           throw new Error("Zły dane.");
+        }
 
         return {
           id: "19dc8159-1248-4cea-89c1-b7dd68bd63c2",
           name: "Jan Kowalski",
-          image: "https://daisyui.com/tailwind-css-component-profile-5@56w.png",
+          image: "/avatar.png",
         };
       },
     }),
   ],
   pages: {
     signIn: "/login",
-    error: "/login",
   },
 };
 

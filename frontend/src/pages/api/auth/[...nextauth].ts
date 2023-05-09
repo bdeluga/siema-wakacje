@@ -1,21 +1,4 @@
-import NextAuth, { type NextAuthOptions } from "next-auth";
-
-
-export const authOptions: NextAuthOptions = {
-  // Include user.id on session
-  callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
-      }
-      return session;
-    },
-  },
-  // Configure one or more authentication providers
-  providers: [
-
-    // ...add  providers here
-  ],
-};
+import NextAuth from "next-auth";
+import { authOptions } from "@/server/auth";
 
 export default NextAuth(authOptions);
