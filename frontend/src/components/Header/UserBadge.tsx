@@ -7,12 +7,12 @@ import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import Link from "next/link";
 import useClickOutside from "@/utils/hooks/useClickOutside";
 
-type Props = {
-  name?: string;
-  image?: string;
-};
+interface UserData {
+  name: string;
+  image: string;
+}
 
-const UserBadge = ({ name, image }: Props) => {
+const UserBadge = ({ name, image }: UserData) => {
   const { ref, isVisible, setIsVisible } = useClickOutside();
   return (
     <div className="relative flex h-10 items-center justify-between">
