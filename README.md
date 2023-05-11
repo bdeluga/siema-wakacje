@@ -22,6 +22,7 @@ pip install django-cors-headers
 pip install django-environ
 pip install osmnx
 pip install pandas
+pip install bcrypt
 python manage.py runserver
 
 ```
