@@ -103,9 +103,17 @@ def RegisterUser(request):
     con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
 
     cur = con.cursor()
+    
 
     
-    username,email,password,image= json.loads(request.body.decode('UTF-8')).values()
+    username,password,email,image= json.loads(request.body.decode('UTF-8')).values()
+    
+    sql_select_query = f"select * from user where email ='{email}'" 
+    user=cur.execute(sql_select_query)
+    user = cur.fetchone() 
+    print(user)
+    if not user==None:
+        return HttpResponse(status=422)
 
     salt=bcrypt.gensalt(rounds=10)
     hashed=bcrypt.hashpw(password.encode(),salt)
