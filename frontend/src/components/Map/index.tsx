@@ -1,20 +1,22 @@
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import "react-leaflet-markercluster/dist/styles.min.css";
 import type { Point } from "@/utils/types";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import Image from "next/image";
 import { useQueryKeyStore } from "@/useStore";
 import L from "leaflet";
-
+import MarkerClusterGroup from "react-leaflet-markercluster";
 type Props = {
   position: Point;
   markers: { lat: number; lon: number }[];
 };
 
 export default function Map({ position, markers }: Props) {
+  const { queryKey } = useQueryKeyStore();
+
   if (!markers)
     return (
       <div className="flex flex-col  gap-2 text-slate-100">
@@ -22,7 +24,6 @@ export default function Map({ position, markers }: Props) {
         <span>Wczytywanie mapy...</span>
       </div>
     );
-  const { queryKey } = useQueryKeyStore();
 
   const markerIcon = new L.Icon({
     iconUrl: `/markers/${queryKey}.png`,
@@ -40,13 +41,15 @@ export default function Map({ position, markers }: Props) {
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-      {markers?.map((marker, idx) => (
-        <Marker
-          key={idx}
-          position={[marker.lat, marker.lon]}
-          icon={markerIcon}
-        />
-      ))}
+      <MarkerClusterGroup>
+        {markers?.map((marker, idx) => (
+          <Marker
+            key={idx}
+            position={[marker.lat, marker.lon]}
+            icon={markerIcon}
+          />
+        ))}
+      </MarkerClusterGroup>
     </MapContainer>
   );
 }

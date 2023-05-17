@@ -53,14 +53,20 @@ export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       credentials: {},
-      authorize(credentials) {
+      async authorize(credentials) {
         const { email, password } = credentials as {
           email: string;
           password: string;
         };
-        if (email !== "jan.kowalski@gmail.com" || password !== "Test123!") {
-          throw new Error("Zły dane.");
-        }
+        const foundUser = await fetch("http://127.0.0.1:8000/login", {
+          method: "POST",
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }).catch((err) => console.error(err));
+
+        console.log(foundUser);
 
         return {
           id: "19dc8159-1248-4cea-89c1-b7dd68bd63c2",

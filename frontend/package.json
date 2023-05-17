@@ -9,6 +9,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@changey/react-leaflet-markercluster": "^4.0.0-rc1",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-regular-svg-icons": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
@@ -20,13 +21,16 @@
     "@trpc/server": "^10.9.0",
     "axios": "^1.2.0",
     "daisyui": "^2.51.3",
+    "leaflet": "^1.9.3",
     "leaflet-defaulticon-compatibility": "^0.1.1",
+    "leaflet.markercluster": "^1.5.3",
     "lodash": "^4.17.21",
     "next": "^13.2.1",
     "next-auth": "^4.22.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-leaflet": "^4.2.0",
+    "react-leaflet": "^4.2.1",
+    "react-leaflet-markercluster": "^3.0.0-rc1",
     "superjson": "1.9.1",
     "zod": "^3.20.6",
     "zustand": "^4.3.6"
@@ -39,6 +43,7 @@
     "@types/prettier": "^2.7.2",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "@types/react-leaflet-markercluster": "^3.0.1",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
     "autoprefixer": "^10.4.7",
