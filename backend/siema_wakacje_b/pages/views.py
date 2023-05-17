@@ -89,7 +89,7 @@ def LoginUser(request):
         return JsonResponse({'message': 'Zły e-mail lub hasło'}, status=404)
     if not bcrypt.checkpw(password.encode(), user[2]):
         return JsonResponse({'message': 'Zły e-mail lub hasło'}, status=404)
-    return HttpResponse(status=200)
+    return JsonResponse(user,status=200)
 
 
 @csrf_exempt 
