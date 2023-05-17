@@ -75,7 +75,7 @@ def LoginUser(request):
     if request.body==None:
         return HttpResponse(status=422)
 
-    con = sqlite3.connect('C:\\Users\\Laptop\\Documents\\GitHub\\siema-wakacje1\\backend\\siema_wakacje_b\\pages\\Project.db')
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
     cur = con.cursor()
 
     
@@ -83,13 +83,20 @@ def LoginUser(request):
     sql_select_query = f"select * from user where email ='{email}'" 
 
     user=cur.execute(sql_select_query)
-    user = cur.fetchone() 
+    user = cur.fetchone()
+    r=[]
+    for row in user:
+         r.append(str(row))
+    r.pop(2)
+    # for x in (user):
+    #     r.append(user)
+    # print(user)
 
     if user==None:
         return JsonResponse({'message': 'Zły e-mail lub hasło'}, status=404)
     if not bcrypt.checkpw(password.encode(), user[2]):
         return JsonResponse({'message': 'Zły e-mail lub hasło'}, status=404)
-    return JsonResponse(user,status=200)
+    return JsonResponse(r,status=200,safe=False)
 
 
 @csrf_exempt 
