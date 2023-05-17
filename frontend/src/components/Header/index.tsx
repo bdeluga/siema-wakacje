@@ -49,9 +49,14 @@ export default function Header() {
           {session ? (
             <UserBadge image={session.user.image} name={session.user.name} />
           ) : (
-            <Link className="btn" href={"/login"}>
-              Zaloguj się!
-            </Link>
+            <>
+              <Link className="btn" href={"/register"}>
+                Zarejestruj się!
+              </Link>
+              <Link className="btn" href={"/login"}>
+                Zaloguj się!
+              </Link>
+            </>
           )}
 
           <div ref={ref} className="relative">
