@@ -91,10 +91,14 @@ def LoginUser(request):
 
     if user==None:
         return JsonResponse({'message': 'Zły e-mail lub hasło'}, status=404)
-    r=[]
-    for row in user:
-         r.append(str(row))
-    r.pop(2)
+    print(user[0])
+    r={
+        'id':user[0],
+        'login':user[1],
+        'email':user[3],
+        'image':user[4]
+    }
+    print(r)
     if not bcrypt.checkpw(password.encode(), user[2]):
         return JsonResponse({'message': 'Zły e-mail lub hasło'}, status=404)
     return JsonResponse(r,status=200,safe=False)
