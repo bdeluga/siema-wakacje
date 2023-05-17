@@ -84,16 +84,17 @@ def LoginUser(request):
 
     user=cur.execute(sql_select_query)
     user = cur.fetchone()
-    r=[]
-    for row in user:
-         r.append(str(row))
-    r.pop(2)
+ 
     # for x in (user):
     #     r.append(user)
     # print(user)
 
     if user==None:
         return JsonResponse({'message': 'Zły e-mail lub hasło'}, status=404)
+    r=[]
+    for row in user:
+         r.append(str(row))
+    r.pop(2)
     if not bcrypt.checkpw(password.encode(), user[2]):
         return JsonResponse({'message': 'Zły e-mail lub hasło'}, status=404)
     return JsonResponse(r,status=200,safe=False)
