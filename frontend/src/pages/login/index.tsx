@@ -45,7 +45,7 @@ export default function Login() {
         >
           <div className="form-control">
             <label className="label" htmlFor="email">
-              <span className="label-text">Twój email</span>
+              <span className="label-text text-white">Twój email</span>
             </label>
             <label className="input-group">
               <span>Email</span>
@@ -61,7 +61,7 @@ export default function Login() {
           </div>
           <div className="form-control mb-4">
             <label className="label" htmlFor="password">
-              <span className="label-text">Twoje hasło</span>
+              <span className="label-text text-white">Twoje hasło</span>
             </label>
             <label className="input-group">
               <span>Hasło</span>
