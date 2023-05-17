@@ -10,3 +10,7 @@
 .scrollbar::-webkit-scrollbar-thumb {
   @apply bg-secondary;
 }
+
+.btn{
+  @apply animate-none;
+}

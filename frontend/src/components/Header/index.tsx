@@ -2,7 +2,10 @@ import useClickOutside from "@/utils/hooks/useClickOutside";
 import useTheme, { type Theme } from "@/utils/hooks/useTheme";
 import { faSun, faMoon, faDesktop } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import UserBadge from "./UserBadge";
 export default function Header() {
   const [mount, setMount] = useState(false);
 
@@ -37,11 +40,19 @@ export default function Header() {
 
   const { isVisible, ref, setIsVisible } = useClickOutside();
 
+  const { data: session } = useSession();
+
   return (
-    <header className="mt-4 flex h-12 w-full items-center   justify-end gap-4 pr-4">
+    <header className="mt-4 flex h-12 w-full items-center justify-end gap-4 pr-4">
       {mount && (
         <>
-          <button className="btn">Zaloguj się!</button>
+          {session ? (
+            <UserBadge image={session.user.image} name={session.user.name} />
+          ) : (
+            <Link className="btn" href={"/login"}>
+              Zaloguj się!
+            </Link>
+          )}
 
           <div ref={ref} className="relative">
             <button
