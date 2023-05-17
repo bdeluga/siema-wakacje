@@ -19,5 +19,9 @@ urlpatterns = [
     re_path(
         r'^(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/(?P<place>[a-zA-Z?_]*)/?$', views.placesResponseView),
     re_path(
-        r'^($)|(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?]*)/$', views.cityPageView)
+        r'^($)|(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?]*)/$', views.cityPageView),
+    re_path(
+         r'login', views.LoginUser),
+    re_path(
+         r'register', views.RegisterUser)
 ]

@@ -1,12 +1,15 @@
 from django.shortcuts import render
 from django.conf import settings
-from django.http import HttpResponse, JsonResponse
-import csv
+from django.http import HttpResponse, JsonResponse,HttpRequest
+from django.views.decorators.csrf import csrf_exempt
+import uuid
 import os
 import json, operator
 import osmnx as ox
 import requests
 import sqlite3
+import bcrypt
+
 
 
 
@@ -65,6 +68,61 @@ def dbSelect(columnName):
     for row in cur.execute(f"SELECT * FROM '{columnName}'"):
         print(row)
 
+@csrf_exempt 
+def LoginUser(request):
+    if request.method != "POST":
+        return HttpResponse(status=404)
+    if request.body==None:
+        return HttpResponse(status=422)
+
+    con = sqlite3.connect('C:\\Users\\Laptop\\Documents\\GitHub\\siema-wakacje1\\backend\\siema_wakacje_b\\pages\\Project.db')
+    cur = con.cursor()
+
+    
+    email,password= json.loads(request.body.decode('UTF-8')).values()
+    sql_select_query = f"select * from user where email ='{email}'" 
+
+    user=cur.execute(sql_select_query)
+    user = cur.fetchone() 
+
+    if user==None:
+        return JsonResponse({'message': 'Zły e-mail lub hasło'}, status=404)
+    if not bcrypt.checkpw(password.encode(), user[2]):
+        return JsonResponse({'message': 'Zły e-mail lub hasło'}, status=404)
+    return HttpResponse(status=200)
+
+
+@csrf_exempt 
+def RegisterUser(request):
+    if request.method != "POST":
+        return HttpResponse(status=404)
+    if request.body==None:
+        return HttpResponse(status=422)
+
+    # con = sqlite3.connect('C:\\Users\\Laptop\\Documents\\GitHub\\siema-wakacje1\\backend\\siema_wakacje_b\\pages\\Project.db')
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+
+    cur = con.cursor()
+    
+
+    
+    username,password,email,image= json.loads(request.body.decode('UTF-8')).values()
+    
+    sql_select_query = f"select * from user where email ='{email}'" 
+    user=cur.execute(sql_select_query)
+    user = cur.fetchone() 
+    print(user)
+    if not user==None:
+        return HttpResponse(status=422)
+
+    salt=bcrypt.gensalt(rounds=10)
+    hashed=bcrypt.hashpw(password.encode(),salt)
+    cur.execute("INSERT INTO user VALUES(?,?,?,?,?)",
+            (str(uuid.uuid4()),username,hashed,email,image))
+    con.commit()
+    return HttpResponse(status=200)
+
+
 
 def placesResponseView(request, cityName, place):
     cityName = cityName.upper()
@@ -80,110 +138,38 @@ def placesResponseView(request, cityName, place):
         result = []
         url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=accomodations&format=json&apikey={settings.TRIP_KEY}'
         data = (requests.get(url)).json()
-        for ind in data:
-            if ind['name'] == '':
-                continue
-            if ind['rate'] <= 1:
-                continue
-            if 'xid' in ind:
-                del ind['xid']
-            if 'dist' in ind:
-                del ind['dist']
-            if 'osm' in ind:
-                del ind['osm']
-            ind['name'] = ind['name'].title()        
-            result.append(ind)            
-        return JsonResponse(result, safe=False)
+       
+        return JsonResponse(cleanJson(data), safe=False)
     if place == 'fun':
         result = []
         url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=amusement_parks,ferris_wheels,miniature_parks,water_parks,baths_and_saunas,theatres_and_entertainments,urban_environment&format=json&apikey={settings.TRIP_KEY}'
         data = (requests.get(url)).json()
-        for ind in data:
-            if ind['name'] == '':
-                continue
-            if ind['rate'] <= 1:
-                continue
-            if 'xid' in ind:
-                del ind['xid']
-            if 'dist' in ind:
-                del ind['dist']
-            if 'osm' in ind:
-                del ind['osm']    
-            ind['name'] = ind['name'].title()     
-            result.append(ind)            
-        return JsonResponse(result, safe=False)
+           
+        return JsonResponse(cleanJson(data), safe=False)
     if place == 'recreations':
         result = []
         url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=gardens_and_parks,fountains,beaches,geological_formations,natural_springs,nature_reserves,water,view_points,sport,bicycle_rental&format=json&apikey={settings.TRIP_KEY}'
         data = (requests.get(url)).json()
-        for ind in data:
-            if ind['name'] == '':
-                continue
-            if ind['rate'] <= 1:
-                continue
-            if 'xid' in ind:
-                del ind['xid']
-            if 'dist' in ind:
-                del ind['dist']
-            if 'osm' in ind:
-                del ind['osm']   
-            ind['name'] = ind['name'].title()       
-            result.append(ind)            
-        return JsonResponse(result, safe=False)
+          
+        return JsonResponse(cleanJson(data), safe=False)
     if place == 'night_life':
         result = []
         url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=alcohol,casino,nightclubs,hookah&format=json&apikey={settings.TRIP_KEY}'
         data = (requests.get(url)).json()
-        for ind in data:
-            if ind['name'] == '':
-                continue
-            if ind['rate'] <= 1:
-                continue
-            if 'xid' in ind:
-                del ind['xid']
-            if 'dist' in ind:
-                del ind['dist']
-            if 'osm' in ind:
-                del ind['osm']  
-            ind['name'] = ind['name'].title()       
-            result.append(ind)            
-        return JsonResponse(result, safe=False)
+             
+        return JsonResponse(cleanJson(data), safe=False)
     if place == 'restaurants':
         result = []
         url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=foods&format=json&apikey={settings.TRIP_KEY}'
         data = (requests.get(url)).json()
-        for ind in data:
-            if ind['name'] == '':
-                continue
-            if ind['rate'] <= 1:
-                continue
-            if 'xid' in ind:
-                del ind['xid']
-            if 'dist' in ind:
-                del ind['dist']
-            if 'osm' in ind:
-                del ind['osm']   
-            ind['name'] = ind['name'].title()      
-            result.append(ind)            
-        return JsonResponse(result, safe=False)
+          
+        return JsonResponse(cleanJson(data), safe=False)
     if place == 'history':
         result = []
         url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=museums,bridges,historic_architecture,lighthouses,towers,archaeology,burial_places,fortifications,historical_places,monuments_and_memorials,religion&format=json&apikey={settings.TRIP_KEY}'
         data = (requests.get(url)).json()
-        for ind in data:
-            if ind['name'] == '':
-                continue
-            if ind['rate'] <= 1:
-                continue
-            if 'xid' in ind:
-                del ind['xid']
-            if 'dist' in ind:
-                del ind['dist']
-            if 'osm' in ind:
-                del ind['osm']    
-            ind['name'] = ind['name'].title()     
-            result.append(ind)            
-        return JsonResponse(result, safe=False)
+        
+        return JsonResponse(cleanJson(data), safe=False)
     # Maćkowy good job to zostawie
     # if place == 'recreations':
     #     result = []
