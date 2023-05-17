@@ -8,7 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { useQueryKeyStore } from "@/useStore";
 import L from "leaflet";
-import MarkerClusterGroup from "react-leaflet-markercluster";
+//@ts-expect-error missing declaration
+import MarkerClusterGroup from "@changey/react-leaflet-markercluster";
 type Props = {
   position: Point;
   markers: { lat: number; lon: number }[];

@@ -64,14 +64,16 @@ export const authOptions: NextAuthOptions = {
             email,
             password,
           }),
-        }).catch((err) => console.error(err));
+        })
+          .then((res) => res.json())
+          .catch((err) => console.error(err));
 
-        console.log(foundUser);
-
+        const [id, name, email_, image] = foundUser;
         return {
-          id: "19dc8159-1248-4cea-89c1-b7dd68bd63c2",
-          name: "Jan Kowalski",
-          image: "/avatar.png",
+          id,
+          name,
+          email: email_,
+          image,
         };
       },
     }),
