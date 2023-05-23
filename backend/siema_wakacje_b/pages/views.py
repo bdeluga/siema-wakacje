@@ -182,31 +182,6 @@ def placesResponseView(request, cityName, place):
         data = (requests.get(url)).json()
         
         return JsonResponse(cleanJson(data), safe=False)
-    # Maćkowy good job to zostawie
-    # if place == 'recreations':
-    #     result = []
-    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=architecture&format=json&apikey={settings.TRIP_KEY}'
-    #     data = (requests.get(url)).json()
-    #     for ind in data:
-    #         place = {}
-    #         if 'Street' in ind['name'] or ind['name'] == '':
-    #             continue
-    #         if ind['rate'] <= 1:
-    #             continue
-    #         place['name'] = ind['name']
-    #         place['rate'] = ind['rate']
-    #         place['point'] = ind['point']
-    #         url2 = f'https://api.opentripmap.com/0.1/en/places/xid/{ind["xid"]}?apikey={settings.TRIP_KEY}'
-    #         data2 = (requests.get(url2)).json()
-    #         if 'preview' in data2:
-    #             if 'source' in data2['preview']:
-    #                 place['img1'] = data2['preview']['source']
-    #         if 'image' in data2:
-    #             place['img2'] = data2['image']
-    #         else:
-    #             place['img'] = 'None'               
-    #         result.append(place)
-    #     return JsonResponse(result, safe=False)
     return JsonResponse({})
 
 def cityPageView(request, cityName=''):
@@ -282,8 +257,24 @@ def cleanJson(data):
             result.append(ind) 
     return result  
 
-def pickHighestRate(request, cityName):
-    # api
+def cleanJsonPlan(data):
+    result = []
+    for ind in data:
+            if ind['name'] == '' or ind['name'].upper() in settings.USED_PLACES:
+                continue
+            if ind['rate'] <= 1:
+                continue
+            if 'xid' in ind:
+                del ind['xid']
+            if 'dist' in ind:
+                del ind['dist']
+            if 'osm' in ind:
+                del ind['osm']    
+            ind['name'] = ind['name'].title()     
+            result.append(ind) 
+    return result 
+
+def pickHighestRate(request, cityName, kind):
     cityName = cityName.upper()
     worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
     lat = -1
@@ -293,37 +284,50 @@ def pickHighestRate(request, cityName):
                 if (((row.split(',')[0])[1:-1]).upper()).startswith(cityName):
                     lat = (row.split(',')[2])[1:-1]
                     lng = (row.split(',')[3])[1:-1]
-                    
     result = {}
-    hotelsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=accomodations&format=json&apikey={settings.TRIP_KEY}'
-    hotelsData = cleanJson((requests.get(hotelsUrl)).json())
-    hotelsData.sort(key=operator.itemgetter('rate'), reverse=True)
-    result['hotels'] = hotelsData[0:3]
-    
-    funUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=amusement_parks,ferris_wheels,miniature_parks,water_parks,baths_and_saunas,theatres_and_entertainments,urban_environment&format=json&apikey={settings.TRIP_KEY}'
-    funData = cleanJson((requests.get(funUrl)).json())
-    funData.sort(key=operator.itemgetter('rate'), reverse=True)
-    result['fun'] = funData[0:3]
-    
-    recreationsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=gardens_and_parks,fountains,beaches,geological_formations,natural_springs,nature_reserves,water,view_points,sport,bicycle_rental&format=json&apikey={settings.TRIP_KEY}'
-    recreationsData = cleanJson((requests.get(recreationsUrl)).json())
-    recreationsData.sort(key=operator.itemgetter('rate'), reverse=True)   
-    result['recreations'] = recreationsData[0:3]
-    
-    nightLifeUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=alcohol,casino,nightclubs,hookah&format=json&apikey={settings.TRIP_KEY}'
-    nightLifeData = cleanJson((requests.get(nightLifeUrl)).json())
-    nightLifeData.sort(key=operator.itemgetter('rate'), reverse=True)
-    result['nightLife'] = nightLifeData[0:3]
-    
-    restaurantsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=foods&format=json&apikey={settings.TRIP_KEY}'
-    restaurantsData = cleanJson((requests.get(restaurantsUrl)).json())
-    restaurantsData.sort(key=operator.itemgetter('rate'), reverse=True)
-    result['restaurants'] = restaurantsData[0:3]
-    
-    historyUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=museums,bridges,historic_architecture,lighthouses,towers,archaeology,burial_places,fortifications,historical_places,monuments_and_memorials,religion&format=json&apikey={settings.TRIP_KEY}'
-    historyData = cleanJson((requests.get(historyUrl)).json())
-    historyData.sort(key=operator.itemgetter('rate'), reverse=True)
-    result['history'] = historyData[0:3]
-    
-    
+    if kind == 'hotels':
+        hotelsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=accomodations&format=json&apikey={settings.TRIP_KEY}'
+        hotelsData = cleanJsonPlan((requests.get(hotelsUrl)).json())
+        hotelsData.sort(key=operator.itemgetter('rate'), reverse=True)
+        result['hotels'] = hotelsData[0:5]
+    if kind == 'fun':
+        funUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=amusement_parks,ferris_wheels,miniature_parks,water_parks,baths_and_saunas,theatres_and_entertainments,urban_environment&format=json&apikey={settings.TRIP_KEY}'
+        funData = cleanJsonPlan((requests.get(funUrl)).json())
+        funData.sort(key=operator.itemgetter('rate'), reverse=True)
+        result['fun'] = funData[0:5]     
+    if kind == 'recreations':
+        recreationsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=gardens_and_parks,fountains,beaches,geological_formations,natural_springs,nature_reserves,water,view_points,sport,bicycle_rental&format=json&apikey={settings.TRIP_KEY}'
+        recreationsData = cleanJsonPlan((requests.get(recreationsUrl)).json())
+        recreationsData.sort(key=operator.itemgetter('rate'), reverse=True)   
+        result['recreations'] = recreationsData[0:5]
+    if kind == 'night_life':
+        nightLifeUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=alcohol,casino,nightclubs,hookah&format=json&apikey={settings.TRIP_KEY}'
+        nightLifeData = cleanJsonPlan((requests.get(nightLifeUrl)).json())
+        nightLifeData.sort(key=operator.itemgetter('rate'), reverse=True)
+        result['nightLife'] = nightLifeData[0:5]
+    if kind == 'restaurants':
+        restaurantsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=foods&format=json&apikey={settings.TRIP_KEY}'
+        restaurantsData = cleanJsonPlan((requests.get(restaurantsUrl)).json())
+        restaurantsData.sort(key=operator.itemgetter('rate'), reverse=True)
+        result['restaurants'] = restaurantsData[0:5]
+    if kind == 'history':
+        historyUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=museums,bridges,historic_architecture,lighthouses,towers,archaeology,burial_places,fortifications,historical_places,monuments_and_memorials,religion&format=json&apikey={settings.TRIP_KEY}'
+        historyData = cleanJsonPlan((requests.get(historyUrl)).json())
+        historyData.sort(key=operator.itemgetter('rate'), reverse=True)
+        result['history'] = historyData[0:5]      
     return JsonResponse(result, safe=False)
+
+def savePlace(request, name):
+    try:
+        settings.USED_PLACES.append(name.upper())
+        return HttpResponse('Ok')
+    except:
+        return HttpResponse('nieok')
+        
+def clearUsedPlaces(request):
+    try:
+        settings.USED_PLACES.clear()
+        return HttpResponse('Ok')
+    except:
+        return HttpResponse('nieok')
+    
