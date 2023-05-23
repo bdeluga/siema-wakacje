@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { City } from "~/lib/types";
 import { env } from "~/env.mjs";
+import Link from "next/link";
 
 export default function SearchCity() {
   const [input, setInput] = useState("");
@@ -47,9 +48,9 @@ export default function SearchCity() {
             className="input-bordered input"
             value={input}
           />
-          <button className="btn">
+          <Link href={`city/${input}`} className="btn">
             <FontAwesomeIcon icon={faMagnifyingGlass} />
-          </button>
+          </Link>
         </div>
 
         <div className="scrollbar card mt-1 flex max-h-56 w-full flex-col space-y-1 overflow-y-auto rounded-sm bg-base-100 p-1">
