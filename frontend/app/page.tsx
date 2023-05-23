@@ -1,5 +1,4 @@
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SearchCity from "./components/SearchCity";
 import Typer from "./components/Typer";
 
 export default function Home() {
@@ -13,20 +12,7 @@ export default function Home() {
         <p className="ml-32 self-start text-2xl font-bold italic xl:text-3xl">
           My to znajdziemy.
         </p>
-        <div className=" w-full pl-32">
-          <div className="mt-6 w-min">
-            <div className="input-group ">
-              <input
-                type="text"
-                placeholder="Wyszukaj miasta..."
-                className="input-bordered input"
-              />
-              <button className="btn">
-                <FontAwesomeIcon icon={faMagnifyingGlass} />
-              </button>
-            </div>
-          </div>
-        </div>
+        <SearchCity />
       </main>
     </>
   );
