@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
@@ -7,20 +6,33 @@ import { faArrowLeft, faGear } from "@fortawesome/free-solid-svg-icons";
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import Link from "next/link";
 import useClickOutside from "~/app/utils/hooks/useClickOutside";
+import { User } from "next-auth";
+import { Session } from "next-auth";
 
-const UserBadge = () => {
-  const { data: session } = useSession();
-
+const UserSection = () => {
   const { ref, isVisible, setIsVisible } = useClickOutside();
+  const { data: session } = useSession();
+  if (!session)
+    return (
+      <div className="flex gap-4">
+        <Link className="btn" href={"login"}>
+          Login
+        </Link>
+        <Link className="btn" href={"register"}>
+          Register
+        </Link>
+      </div>
+    );
+
   return (
-    <div className="relative flex h-10 items-center justify-between">
+    <div className="relative mt-1 flex h-10 items-center justify-between">
       {!isVisible ? (
         <>
-          <p className="px-4">{session?.user.name}</p>
+          <p className="px-4">{session.user.name}</p>
           <button className="avatar" onClick={() => setIsVisible(true)}>
             <div className="mask mask-squircle relative w-14">
               <Image
-                src={session?.user.image || "/avatar.png"}
+                src={session.user.image || "/avatar.png"}
                 alt="Zdjęcie użytkownika"
                 placeholder="blur"
                 blurDataURL="/admin.jpg"
@@ -44,7 +56,7 @@ const UserBadge = () => {
           <div className="form-control avatar mt-4 items-center">
             <div className="relative w-28 rounded-xl">
               <Image
-                src={session?.user.image || "/avatar.png"}
+                src={session.user.image || "/avatar.png"}
                 alt="Zdjęcie użytkownika"
                 placeholder="blur"
                 blurDataURL="/admin.jpg"
@@ -52,7 +64,7 @@ const UserBadge = () => {
                 sizes="100%"
               />
             </div>
-            <p className="mt-2 text-lg font-black">{session?.user.name}</p>
+            <p className="mt-2 text-lg font-black">{session.user.name}</p>
 
             <Link href="/settings" className="btn-ghost btn mt-4 text-sm">
               Edytuj profil
@@ -76,4 +88,4 @@ const UserBadge = () => {
   );
 };
 
-export default UserBadge;
+export default UserSection;
