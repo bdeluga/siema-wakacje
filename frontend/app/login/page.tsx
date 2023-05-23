@@ -1,13 +1,14 @@
 "use client";
 import { signIn } from "next-auth/react";
 import { type FormEvent, useState } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 interface formData {
   email: string;
   password: string;
 }
 
 export default function Login() {
+  const { push } = useRouter();
   const [formData, setFormData] = useState<formData>({
     email: "",
     password: "",
@@ -23,7 +24,7 @@ export default function Login() {
     });
     setIsFetching(false);
     if (res?.ok) {
-      redirect("/");
+      return push("/");
     }
   };
 

@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/router";
 import { type FormEvent, useState } from "react";
-
+import { redirect } from "next/navigation";
 interface formData {
   email: string;
   password: string;
@@ -30,7 +30,7 @@ export default function Register() {
     });
     setIsFetching(false);
     if (res?.ok) {
-      await router.push("/");
+      redirect("/");
     }
   };
 
