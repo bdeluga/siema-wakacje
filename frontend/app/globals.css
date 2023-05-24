@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+  @apply relative p-0 m-0 box-border;
+}
+.scrollbar::-webkit-scrollbar {
+  width: 0.3rem;
+
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-secondary;
+}
+
+.btn{
+  @apply animate-none;
+}
