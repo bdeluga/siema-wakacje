@@ -4,4 +4,8 @@ create table place(id int PRIMARY KEY,name text, rate int,kinds text,wikidata te
 FOREIGN KEY (cityid) 
 REFERENCES city(cityid) 
 );
-create table user(id int PRIMARY KEY,login text, password text, email text, picture text);
+create table user(userid int PRIMARY KEY,login text, password text, email text, picture text);
+create table list(id int PRIMARY KEY,userid int,data text,
+FOREIGN KEY (userid)
+REFERENCES user(userid)
+);

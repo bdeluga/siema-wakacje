@@ -317,17 +317,52 @@ def pickHighestRate(request, cityName, kind):
         result['history'] = historyData[0:5]      
     return JsonResponse(result, safe=False)
 
-def savePlace(request, name):
-    try:
-        settings.USED_PLACES.append(name.upper())
-        return HttpResponse('Ok')
-    except:
-        return HttpResponse('nieok')
+@csrf_exempt 
+def savePlace(request):
+    
+    if request.method != "POST":
+        return HttpResponse(status=404)
+    if request.body==None:
+        return HttpResponse(status=422)
+
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+    cur = con.cursor()
+
+    
+    id,name,rate,kind,_,_,lon,lat= json.loads(request.body.decode('UTF-8')).values()
+    print(id)
+    sql_select_query = f"select * from user where id ='{id}'" 
+    print(settings.USED_PLACES==[])
+    print([id in sublist for sublist in settings.USED_PLACES])
+    if not any([id in sublist for sublist in settings.USED_PLACES]) or settings.USED_PLACES ==[]:
+        try:
+            settings.USED_PLACES.append([id,name,rate,kind,lon,lat])
+            print(settings.USED_PLACES)
+            return HttpResponse('Ok')
+        except:
+            return HttpResponse('nieok')
+    print(settings.USED_PLACES)
+    # settings.USED_PLACES.clear()
+
+    return HttpResponse('Rekordzik juz jest nie martw sie:)')
         
-def clearUsedPlaces(request):
+@csrf_exempt 
+def confirmUsedPlaces(request):
+    print(settings.USED_PLACES)
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+    cur = con.cursor()
+
+    cur.execute("INSERT INTO list VALUES(?,?,?)",
+    (str(uuid.uuid4()),1,str(settings.USED_PLACES)))
+    con.commit()
+
+    for row in cur.execute(f"SELECT * FROM list"):
+        print(row)
     try:
         settings.USED_PLACES.clear()
         return HttpResponse('Ok')
     except:
         return HttpResponse('nieok')
+    return "elowina eeeeelowina"
+
     
