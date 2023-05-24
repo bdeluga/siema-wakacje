@@ -6,7 +6,7 @@ export interface City {
   lng: number;
 }
 
-export interface Hotel {
+export interface Place {
   name: string;
   rate: number;
   point: {

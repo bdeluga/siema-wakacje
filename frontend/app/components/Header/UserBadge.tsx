@@ -23,7 +23,6 @@ const UserSection = () => {
         </Link>
       </div>
     );
-
   return (
     <div className="relative mt-1 flex h-10 items-center justify-between">
       {!isVisible ? (
@@ -44,7 +43,7 @@ const UserSection = () => {
         </>
       ) : (
         <div
-          className=" form-control absolute right-0 top-0  z-10 w-80 items-center space-y-4 rounded-xl bg-base-300 p-3 shadow-lg shadow-base-300"
+          className=" form-control absolute right-0 top-0  z-[401] w-80 items-center space-y-4 rounded-xl bg-base-300 p-3 shadow-lg shadow-base-300 "
           ref={ref}
         >
           <button
