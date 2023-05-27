@@ -20,8 +20,6 @@ export default function LeafletMap({ center }: Props) {
   const markers = useMarkersStore((slice) => slice.markers);
   const queryKey = useQueryKeyStore((slice) => slice.queryKey);
 
-  console.log("Markers", markers);
-
   const markerIcon = new L.Icon({
     iconUrl: `/markers/${queryKey}.png`,
     iconSize: [40, 40],
