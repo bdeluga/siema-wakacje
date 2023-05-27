@@ -2,12 +2,14 @@ import React from "react";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faGear } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faClipboardList,
+  faGear,
+} from "@fortawesome/free-solid-svg-icons";
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import Link from "next/link";
 import useClickOutside from "~/app/utils/hooks/useClickOutside";
-import { User } from "next-auth";
-import { Session } from "next-auth";
 
 const UserSection = () => {
   const { ref, isVisible, setIsVisible } = useClickOutside();
@@ -46,12 +48,18 @@ const UserSection = () => {
           className=" form-control absolute right-0 top-0  z-[401] w-80 items-center space-y-4 rounded-xl bg-base-300 p-3 shadow-lg shadow-base-300 "
           ref={ref}
         >
-          <button
-            className="btn-ghost btn self-start text-lg"
-            onClick={() => setIsVisible(false)}
-          >
-            <FontAwesomeIcon icon={faArrowLeft as IconProp} />
-          </button>
+          <div className="flex justify-between w-full">
+            <button
+              className="btn-ghost btn text-lg"
+              onClick={() => setIsVisible(false)}
+            >
+              <FontAwesomeIcon icon={faArrowLeft as IconProp} />
+            </button>
+            <Link className="btn-ghost btn self-start text-lg" href={"/list"}>
+              <FontAwesomeIcon icon={faClipboardList as IconProp} />
+            </Link>
+          </div>
+
           <div className="form-control avatar mt-4 items-center">
             <div className="relative w-28 rounded-xl">
               <Image

@@ -21,7 +21,6 @@ const QueryButtons = ({ city, set }: Props) => {
         const response: Place[] = await fetch(
           `${env.NEXT_PUBLIC_API_URL}/${city}/${queryKey}`
         ).then((res) => res.json());
-        console.log(response);
         set(response);
         //@ts-expect-error
         setMarkers(response.map((mark) => mark.point));
