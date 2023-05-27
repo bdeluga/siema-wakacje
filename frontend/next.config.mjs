@@ -3,6 +3,7 @@ import "./env.mjs";
 const config = {
   experimental: {
     serverActions: true,
+    esmExternals: "loose",
   },
 };
 
