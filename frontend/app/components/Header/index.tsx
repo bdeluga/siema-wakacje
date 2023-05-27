@@ -12,7 +12,7 @@ export default function Header() {
 
   if (!mounted) return null;
   return (
-    <header className="absolute top-2 right-2 flex h-12 w-full items-center justify-end gap-4">
+    <header className="absolute top-4 right-2 flex h-12 w-full items-center justify-end gap-4">
       <UserSection />
       <ThemeSwitcher />
     </header>
