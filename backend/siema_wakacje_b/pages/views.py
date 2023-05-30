@@ -135,55 +135,172 @@ def RegisterUser(request):
     return HttpResponse(status=200)
 
 
-
+@csrf_exempt 
 def placesResponseView(request, cityName, place):
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+    cur = con.cursor()
+
+
     cityName = cityName.upper()
-    worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
-    lat = -1
-    lng = -1
-    with open(worldCities, encoding='utf8') as data:
-            for row in data:
-                if (((row.split(',')[0])[1:-1]).upper()).startswith(cityName):
-                    lat = (row.split(',')[2])[1:-1]
-                    lng = (row.split(',')[3])[1:-1]
+    sql_select_query = f"select * from city where name ='{cityName}'" 
+
+    city=cur.execute(sql_select_query)
+    city = cur.fetchone() 
+    if city==None:
+        print(city)
+        return HttpResponse(status=422)
+
     if place == 'hotels':
         result = []
-        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=accomodations&format=json&apikey={settings.TRIP_KEY}'
-        data = (requests.get(url)).json()
-       
-        return JsonResponse(cleanJson(data), safe=False)
+        sql_select_query = f"SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name ='{cityName}' AND place.kinds='hotels'" 
+        places=cur.execute(sql_select_query)
+        row = cur.fetchall() 
+        for places in row:
+            r={
+                'id':places[0],
+                'name':places[1].decode('UTF8'),
+                'rate':places[2],
+                'kinds':places[3],
+                'wikidata':places[4],
+                "point":{ 'lon':places[6],
+                'lat':places[7]}
+            }
+            result.append(r)
+        return JsonResponse(result, safe=False)
     if place == 'fun':
         result = []
-        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=amusement_parks,ferris_wheels,miniature_parks,water_parks,baths_and_saunas,theatres_and_entertainments,urban_environment&format=json&apikey={settings.TRIP_KEY}'
-        data = (requests.get(url)).json()
-           
-        return JsonResponse(cleanJson(data), safe=False)
+        sql_select_query = f"SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name ='{cityName}' AND place.kinds='fun'" 
+        places=cur.execute(sql_select_query)
+        row = cur.fetchall() 
+        for places in row:
+            r={
+                'id':places[0],
+                'name':places[1].decode('UTF8'),
+                'rate':places[2],
+                'kinds':places[3],
+                'wikidata':places[4],
+                "point":{ 'lon':places[6],
+                'lat':places[7]}
+            }
+            result.append(r)
+        return JsonResponse(result, safe=False)
+
     if place == 'recreations':
         result = []
-        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=gardens_and_parks,fountains,beaches,geological_formations,natural_springs,nature_reserves,water,view_points,sport,bicycle_rental&format=json&apikey={settings.TRIP_KEY}'
-        data = (requests.get(url)).json()
-          
-        return JsonResponse(cleanJson(data), safe=False)
+        sql_select_query = f"SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name ='{cityName}' AND place.kinds='recreations'" 
+        places=cur.execute(sql_select_query)
+        row = cur.fetchall() 
+        for places in row:
+            r={
+                'id':places[0],
+                'name':places[1].decode('UTF8'),
+                'rate':places[2],
+                'kinds':places[3],
+                'wikidata':places[4],
+                "point":{ 'lon':places[6],
+                'lat':places[7]}
+            }
+            result.append(r)
+        return JsonResponse(result, safe=False)
+
     if place == 'night_life':
         result = []
-        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=alcohol,casino,nightclubs,hookah&format=json&apikey={settings.TRIP_KEY}'
-        data = (requests.get(url)).json()
-             
-        return JsonResponse(cleanJson(data), safe=False)
+        sql_select_query = f"SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name ='{cityName}' AND place.kinds='night_life'" 
+        places=cur.execute(sql_select_query)
+        row = cur.fetchall() 
+        for places in row:
+            r={
+                'id':places[0],
+                'name':places[1].decode('UTF8'),
+                'rate':places[2],
+                'kinds':places[3],
+                'wikidata':places[4],
+                "point":{ 'lon':places[6],
+                'lat':places[7]}
+            }
+            result.append(r)
+        return JsonResponse(result, safe=False)
     if place == 'restaurants':
         result = []
-        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=foods&format=json&apikey={settings.TRIP_KEY}'
-        data = (requests.get(url)).json()
-          
-        return JsonResponse(cleanJson(data), safe=False)
+        sql_select_query = f"SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name ='{cityName}' AND place.kinds='restaurants'" 
+        places=cur.execute(sql_select_query)
+        row = cur.fetchall() 
+        for places in row:
+            r={
+                'id':places[0],
+                'name':places[1].decode('UTF8'),
+                'rate':places[2],
+                'kinds':places[3],
+                'wikidata':places[4],
+                "point":{ 'lon':places[6],
+                'lat':places[7]}
+            }
+            result.append(r)
+        return JsonResponse(result, safe=False)
     if place == 'history':
         result = []
-        url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=museums,bridges,historic_architecture,lighthouses,towers,archaeology,burial_places,fortifications,historical_places,monuments_and_memorials,religion&format=json&apikey={settings.TRIP_KEY}'
-        data = (requests.get(url)).json()
-        
-        return JsonResponse(cleanJson(data), safe=False)
-    return JsonResponse({})
+        sql_select_query = f"SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name ='{cityName}' AND place.kinds='history'" 
+        row=cur.execute(sql_select_query)
+        row = cur.fetchall() 
+        for places in row:
+            r={
+                'id':places[0],
+                'name':places[1].decode('UTF8'),
+                'rate':places[2],
+                'kinds':places[3],
+                'wikidata':places[4],
+                "point":{ 'lon':places[6],
+                'lat':places[7]}
+            }
+            result.append(r)
+        return JsonResponse(result, safe=False)
 
+    # worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
+    # lat = -1
+    # lng = -1
+    # with open(worldCities, encoding='utf8') as data:
+    #         for row in data:
+    #             if (((row.split(',')[0])[1:-1]).upper()).startswith(cityName):
+    #                 lat = (row.split(',')[2])[1:-1]
+    #                 lng = (row.split(',')[3])[1:-1]
+    # if place == 'hotels':
+    #     result = []
+    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=accomodations&format=json&apikey={settings.TRIP_KEY}'
+    #     data = (requests.get(url)).json()
+       
+    #     return JsonResponse(cleanJson(data), safe=False)
+    # if place == 'fun':
+    #     result = []
+    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=amusement_parks,ferris_wheels,miniature_parks,water_parks,baths_and_saunas,theatres_and_entertainments,urban_environment&format=json&apikey={settings.TRIP_KEY}'
+    #     data = (requests.get(url)).json()
+           
+    #     return JsonResponse(cleanJson(data), safe=False)
+    # if place == 'recreations':
+    #     result = []
+    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=gardens_and_parks,fountains,beaches,geological_formations,natural_springs,nature_reserves,water,view_points,sport,bicycle_rental&format=json&apikey={settings.TRIP_KEY}'
+    #     data = (requests.get(url)).json()
+          
+    #     return JsonResponse(cleanJson(data), safe=False)
+    # if place == 'night_life':
+    #     result = []
+    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=alcohol,casino,nightclubs,hookah&format=json&apikey={settings.TRIP_KEY}'
+    #     data = (requests.get(url)).json()
+             
+    #     return JsonResponse(cleanJson(data), safe=False)
+    # if place == 'restaurants':
+    #     result = []
+    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=foods&format=json&apikey={settings.TRIP_KEY}'
+    #     data = (requests.get(url)).json()
+          
+    #     return JsonResponse(cleanJson(data), safe=False)
+    # if place == 'history':
+    #     result = []
+    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=museums,bridges,historic_architecture,lighthouses,towers,archaeology,burial_places,fortifications,historical_places,monuments_and_memorials,religion&format=json&apikey={settings.TRIP_KEY}'
+    #     data = (requests.get(url)).json()
+        
+    #     return JsonResponse(cleanJson(data), safe=False)
+    return JsonResponse({})
+@csrf_exempt 
 def cityPageView(request, cityName=''):
 
     # city name from path
@@ -207,9 +324,16 @@ def cityPageView(request, cityName=''):
     # response as json
     return JsonResponse(hotels)
 
-
+@csrf_exempt 
 def cityQueryView(request, cityName=''):
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+    cur = con.cursor()
+
     cityName = cityName.upper()
+    # sql_select_query = f"select * from city where name Like ?", (starting_letters + '%',)) 
+    cityall=cur.execute("select * from city where name Like ? || '%'", (cityName,))
+    cityall = cur.fetchall()
+    print(cityall) 
     # nasza baza 40k miast
     worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
     # sciezka (upper liwiduje mniejsze wieksze znaki)
@@ -221,6 +345,17 @@ def cityQueryView(request, cityName=''):
         return HttpResponse(status=200)
     else:
         count = 0
+        # for row in cityall:
+        #     print(row)
+        #     city={}
+        #     city['name']=row[1]
+        #     city['lat']=str(row[3])
+        #     city['lng']=str(row[4])
+        #     city['country']="Poland"
+        #     city['iso'] = row[2]
+        #     cities['data'].append(city)
+        #     count = count + 1
+
         with open(worldCities, encoding='utf8') as data:
             for row in data:
                 if (((row.split(',')[0])[1:-1]).upper()).startswith(cityName):
@@ -235,11 +370,13 @@ def cityQueryView(request, cityName=''):
         inf = {}
         inf['count'] = count
         cities['metainf'].append(inf)
+        print(cities)
         if(inf['count'] == 0):
             return JsonResponse({'message': 'Szukane miasto nie istnieje.'}, status=404)
 
         return JsonResponse(cities)
 
+@csrf_exempt 
 def cleanJson(data):
     result = []
     for ind in data:
@@ -247,8 +384,6 @@ def cleanJson(data):
                 continue
             if ind['rate'] <= 1:
                 continue
-            if 'xid' in ind:
-                del ind['xid']
             if 'dist' in ind:
                 del ind['dist']
             if 'osm' in ind:
@@ -274,6 +409,7 @@ def cleanJsonPlan(data):
             result.append(ind) 
     return result 
 
+@csrf_exempt 
 def pickHighestRate(request, cityName, kind):
     cityName = cityName.upper()
     worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
@@ -285,36 +421,138 @@ def pickHighestRate(request, cityName, kind):
                     lat = (row.split(',')[2])[1:-1]
                     lng = (row.split(',')[3])[1:-1]
     result = {}
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+    cur = con.cursor()
+
+
     if kind == 'hotels':
-        hotelsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=accomodations&format=json&apikey={settings.TRIP_KEY}'
-        hotelsData = cleanJsonPlan((requests.get(hotelsUrl)).json())
+        result = []
+        sql_select_query = f"SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name ='{cityName}' AND place.kinds='hotels'" 
+        places=cur.execute(sql_select_query)
+        places = cur.fetchone() 
+        hotelsData={
+            'id':places[0],
+            'name':places[1],
+            'rate':places[2],
+            'kinds':places[3],
+            'wikidata':places[4],
+            'lon':places[6],
+            'lat':places[7]
+        }
         hotelsData.sort(key=operator.itemgetter('rate'), reverse=True)
-        result['hotels'] = hotelsData[0:5]
+        result['fun'] = hotelsData[0:5]
     if kind == 'fun':
-        funUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=amusement_parks,ferris_wheels,miniature_parks,water_parks,baths_and_saunas,theatres_and_entertainments,urban_environment&format=json&apikey={settings.TRIP_KEY}'
-        funData = cleanJsonPlan((requests.get(funUrl)).json())
+        result = []
+        sql_select_query = f"SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name ='{cityName}' AND place.kinds='fun'" 
+        places=cur.execute(sql_select_query)
+        places = cur.fetchone() 
+        funData={
+            'id':places[0],
+            'name':places[1],
+            'rate':places[2],
+            'kinds':places[3],
+            'wikidata':places[4],
+            'lon':places[6],
+            'lat':places[7]
+        }
         funData.sort(key=operator.itemgetter('rate'), reverse=True)
-        result['fun'] = funData[0:5]     
+        result['fun'] = funData[0:5]
+
     if kind == 'recreations':
-        recreationsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=gardens_and_parks,fountains,beaches,geological_formations,natural_springs,nature_reserves,water,view_points,sport,bicycle_rental&format=json&apikey={settings.TRIP_KEY}'
-        recreationsData = cleanJsonPlan((requests.get(recreationsUrl)).json())
-        recreationsData.sort(key=operator.itemgetter('rate'), reverse=True)   
+        result = []
+        sql_select_query = f"SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name ='{cityName}' AND place.kinds='recreations'" 
+        places=cur.execute(sql_select_query)
+        places = cur.fetchone() 
+        recreationsData={
+            'id':places[0],
+            'name':places[1],
+            'rate':places[2],
+            'kinds':places[3],
+            'wikidata':places[4],
+            'lon':places[6],
+            'lat':places[7]
+        }
+        recreationsData.sort(key=operator.itemgetter('rate'), reverse=True)
         result['recreations'] = recreationsData[0:5]
+
     if kind == 'night_life':
-        nightLifeUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=alcohol,casino,nightclubs,hookah&format=json&apikey={settings.TRIP_KEY}'
-        nightLifeData = cleanJsonPlan((requests.get(nightLifeUrl)).json())
-        nightLifeData.sort(key=operator.itemgetter('rate'), reverse=True)
-        result['nightLife'] = nightLifeData[0:5]
+        result = []
+        sql_select_query = f"SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name ='{cityName}' AND place.kinds='night_life'" 
+        places=cur.execute(sql_select_query)
+        places = cur.fetchone() 
+        night_lifeData={
+            'id':places[0],
+            'name':places[1],
+            'rate':places[2],
+            'kinds':places[3],
+            'wikidata':places[4],
+            'lon':places[6],
+            'lat':places[7]
+        }
+        night_lifeData.sort(key=operator.itemgetter('rate'), reverse=True)
+        result['night_life'] = night_lifeData[0:5]
     if kind == 'restaurants':
-        restaurantsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=foods&format=json&apikey={settings.TRIP_KEY}'
-        restaurantsData = cleanJsonPlan((requests.get(restaurantsUrl)).json())
+        result = []
+        sql_select_query = f"SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name ='{cityName}' AND place.kinds='restaurants'" 
+        places=cur.execute(sql_select_query)
+        places = cur.fetchone() 
+        restaurantsData={
+            'id':places[0],
+            'name':places[1],
+            'rate':places[2],
+            'kinds':places[3],
+            'wikidata':places[4],
+            'lon':places[6],
+            'lat':places[7]
+        }
         restaurantsData.sort(key=operator.itemgetter('rate'), reverse=True)
         result['restaurants'] = restaurantsData[0:5]
     if kind == 'history':
-        historyUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=museums,bridges,historic_architecture,lighthouses,towers,archaeology,burial_places,fortifications,historical_places,monuments_and_memorials,religion&format=json&apikey={settings.TRIP_KEY}'
-        historyData = cleanJsonPlan((requests.get(historyUrl)).json())
+        result = []
+        sql_select_query = f"SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name ='{cityName}' AND place.kinds='history'" 
+        places=cur.execute(sql_select_query)
+        places = cur.fetchone() 
+        historyData={
+            'id':places[0],
+            'name':places[1],
+            'rate':places[2],
+            'kinds':places[3],
+            'wikidata':places[4],
+            'lon':places[6],
+            'lat':places[7]
+        }
         historyData.sort(key=operator.itemgetter('rate'), reverse=True)
-        result['history'] = historyData[0:5]      
+        result['history'] = historyData[0:5]
+    # if kind == 'hotels':
+    #     hotelsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=accomodations&format=json&apikey={settings.TRIP_KEY}'
+    #     hotelsData = cleanJsonPlan((requests.get(hotelsUrl)).json())
+    #     hotelsData.sort(key=operator.itemgetter('rate'), reverse=True)
+    #     result['hotels'] = hotelsData[0:5]
+    # if kind == 'fun':
+    #     funUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=amusement_parks,ferris_wheels,miniature_parks,water_parks,baths_and_saunas,theatres_and_entertainments,urban_environment&format=json&apikey={settings.TRIP_KEY}'
+    #     funData = cleanJsonPlan((requests.get(funUrl)).json())
+    #     funData.sort(key=operator.itemgetter('rate'), reverse=True)
+    #     result['fun'] = funData[0:5]     
+    # if kind == 'recreations':
+    #     recreationsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=gardens_and_parks,fountains,beaches,geological_formations,natural_springs,nature_reserves,water,view_points,sport,bicycle_rental&format=json&apikey={settings.TRIP_KEY}'
+    #     recreationsData = cleanJsonPlan((requests.get(recreationsUrl)).json())
+    #     recreationsData.sort(key=operator.itemgetter('rate'), reverse=True)   
+    #     result['recreations'] = recreationsData[0:5]
+    # if kind == 'night_life':
+    #     nightLifeUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=alcohol,casino,nightclubs,hookah&format=json&apikey={settings.TRIP_KEY}'
+    #     nightLifeData = cleanJsonPlan((requests.get(nightLifeUrl)).json())
+    #     nightLifeData.sort(key=operator.itemgetter('rate'), reverse=True)
+    #     result['nightLife'] = nightLifeData[0:5]
+    # if kind == 'restaurants':
+    #     restaurantsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=foods&format=json&apikey={settings.TRIP_KEY}'
+    #     restaurantsData = cleanJsonPlan((requests.get(restaurantsUrl)).json())
+    #     restaurantsData.sort(key=operator.itemgetter('rate'), reverse=True)
+    #     result['restaurants'] = restaurantsData[0:5]
+    # if kind == 'history':
+    #     historyUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=museums,bridges,historic_architecture,lighthouses,towers,archaeology,burial_places,fortifications,historical_places,monuments_and_memorials,religion&format=json&apikey={settings.TRIP_KEY}'
+    #     historyData = cleanJsonPlan((requests.get(historyUrl)).json())
+    #     historyData.sort(key=operator.itemgetter('rate'), reverse=True)
+    #     result['history'] = historyData[0:5]      
     return JsonResponse(result, safe=False)
 
 @csrf_exempt 
