@@ -40,3 +40,12 @@ export const useQueryKeyStore = create<QueryKey>((set) => ({
   queryKey: "hotels",
   setKey: (key) => set(() => ({ queryKey: key })),
 }));
+
+interface HighlightPoint {
+  point?: Point;
+  setPoint: (point: Point) => void;
+}
+
+export const useHighlightStore = create<HighlightPoint>((set) => ({
+  setPoint: (point) => set(() => ({ point: point })),
+}));

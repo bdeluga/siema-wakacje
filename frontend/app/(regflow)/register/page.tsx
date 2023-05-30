@@ -1,7 +1,6 @@
 "use client";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
-import { redirect } from "next/navigation";
 interface formData {
   email: string;
   password: string;
@@ -9,7 +8,7 @@ interface formData {
 }
 
 export default function Register() {
-  const router = useRouter();
+  const { push } = useRouter();
   const [formData, setFormData] = useState<formData>({
     email: "",
     password: "",
@@ -30,7 +29,7 @@ export default function Register() {
     });
     setIsFetching(false);
     if (res?.ok) {
-      redirect("/");
+      push("/");
     }
   };
 

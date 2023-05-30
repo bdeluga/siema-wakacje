@@ -5,6 +5,13 @@ type Credentials = {
   password: string;
 };
 
+interface UserObject {
+  id: string;
+  login: string;
+  email: string;
+  image: string;
+}
+
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
@@ -29,20 +36,23 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const { email, password } = credentials as Credentials;
 
-        const foundUser = await fetch("http://127.0.0.1:8000/login", {
-          method: "POST",
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        })
+        const foundUser: UserObject = await fetch(
+          "http://127.0.0.1:8000/login",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              email,
+              password,
+            }),
+          }
+        )
           .then((res) => res.json())
           .catch((err) => console.error(err));
 
-        const [id, name, email_, image] = foundUser;
+        const { id, login, email: email_, image } = foundUser;
         return {
           id,
-          name,
+          name: login,
           email: email_,
           image,
         };
