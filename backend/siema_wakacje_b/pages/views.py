@@ -119,7 +119,7 @@ def RegisterUser(request):
 
     
     username,password,email,image= json.loads(request.body.decode('UTF-8')).values()
-    
+    print("XDD")
     sql_select_query = f"select * from user where email ='{email}'" 
     user=cur.execute(sql_select_query)
     user = cur.fetchone() 
@@ -323,6 +323,8 @@ def cityPageView(request, cityName=''):
         hotels['hotels'].append(hotel)
     # response as json
     return JsonResponse(hotels)
+
+
 
 @csrf_exempt 
 def cityQueryView(request, cityName=''):
@@ -603,4 +605,29 @@ def confirmUsedPlaces(request):
         return HttpResponse('nieok')
     return "elowina eeeeelowina"
 
+@csrf_exempt 
+def cityShowList(request):
+
+
+    if request.method != "POST":
+        return HttpResponse(status=404)
+    if request.body==None:
+        return HttpResponse(status=422)
+
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+    cur = con.cursor()
+
     
+    id= json.loads(request.body)
+    print(list(id.values())[0])
+    sql_select_query = f"select data from list where userid ='{list(id.values())[0]}'" 
+    print(id)
+    sql_select_query=cur.execute(sql_select_query)
+    sql_select_query = cur.fetchall() 
+    r=[]
+
+    for i in sql_select_query:
+        print(i)
+        r.append(i)
+    print(r)
+    return JsonResponse(r, safe=False)
