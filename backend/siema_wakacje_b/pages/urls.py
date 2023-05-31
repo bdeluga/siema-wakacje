@@ -19,13 +19,16 @@ urlpatterns = [
     re_path(
         r'^plan/save', views.savePlace),
     re_path(
-        r'^plan/confirm', views.confirmUsedPlaces), 
+        r'^plan/confirm', views.confirmUsedPlaces),
+    re_path(
+         r'^plan/show', views.cityShowList),  
     re_path(
         r'^(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/(?P<place>[a-zA-Z?_]*)/?$', views.placesResponseView),
     re_path(
         r'^($)|(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?]*)/$', views.cityPageView),
     re_path(
          r'login', views.LoginUser),
+       
     re_path(
          r'register', views.RegisterUser)
 ]
