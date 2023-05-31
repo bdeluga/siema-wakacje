@@ -623,6 +623,7 @@ def cityShowList(request):
     
     id= json.loads(request.body)
     print(list(id.values())[0])
+    # name
     sql_select_query = f"select data from list where userid ='{list(id.values())[0]}'" 
     print(id)
     sql_select_query=cur.execute(sql_select_query)
