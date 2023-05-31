@@ -591,9 +591,12 @@ def confirmUsedPlaces(request):
     print(settings.USED_PLACES)
     con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
     cur = con.cursor()
-
+    
+    # id z headersow
+    userid,array= json.loads(request.body).values()
+    # print(list(id.values())[0])
     cur.execute("INSERT INTO list VALUES(?,?,?)",
-    (str(uuid.uuid4()),1,str(settings.USED_PLACES)))
+    (str(uuid.uuid4()),userid,str(array)))
     con.commit()
 
     for row in cur.execute(f"SELECT * FROM list"):
