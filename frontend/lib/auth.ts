@@ -1,5 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { env } from "~/env.mjs";
 type Credentials = {
   email: string;
   password: string;
@@ -36,26 +37,30 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const { email, password } = credentials as Credentials;
 
-        const foundUser: UserObject = await fetch(
-          "http://127.0.0.1:8000/login",
-          {
-            method: "POST",
-            body: JSON.stringify({
-              email,
-              password,
-            }),
-          }
-        )
-          .then((res) => res.json())
-          .catch((err) => console.error(err));
+        const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/login`, {
+          method: "POST",
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        });
 
-        const { id, login, email: email_, image } = foundUser;
-        return {
-          id,
-          name: login,
-          email: email_,
-          image,
-        };
+        if (res.ok) {
+          const {
+            id,
+            login,
+            email: email_,
+            image,
+          } = (await res.json()) as UserObject;
+          return {
+            id,
+            name: login,
+            email: email_,
+            image,
+          };
+        } else {
+          return null;
+        }
       },
     }),
   ],

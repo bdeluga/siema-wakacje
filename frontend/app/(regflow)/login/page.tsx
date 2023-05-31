@@ -17,17 +17,19 @@ export default function Login() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsFetching(true);
-    const res = await signIn("credentials", {
+    signIn("credentials", {
       email: formData.email,
       password: formData.password,
       redirect: false,
+    }).then((res) => {
+      if (res!.ok) {
+        push("/");
+      } else {
+        if (res?.status === 401) console.log("Błędny login lub hasło");
+      }
+      setIsFetching(false);
     });
-    setIsFetching(false);
-    if (res?.ok) {
-      return push("/");
-    }
   };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({
       ...formData,
