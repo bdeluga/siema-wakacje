@@ -14,6 +14,7 @@ import bcrypt
 
 
 
+
 def positionOfCity(cityName):
     worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
     lat = -1
@@ -347,28 +348,28 @@ def cityQueryView(request, cityName=''):
         return HttpResponse(status=200)
     else:
         count = 0
-        # for row in cityall:
-        #     print(row)
-        #     city={}
-        #     city['name']=row[1]
-        #     city['lat']=str(row[3])
-        #     city['lng']=str(row[4])
-        #     city['country']="Poland"
-        #     city['iso'] = row[2]
-        #     cities['data'].append(city)
-        #     count = count + 1
+        for row in cityall:
+            # print(row)
+            city={}
+            city['name']=row[1]
+            city['lat']=str(row[3])
+            city['lng']=str(row[4])
+            city['country']="Poland"
+            city['iso'] = row[2]
+            cities['data'].append(city)
+            count = count + 1
 
-        with open(worldCities, encoding='utf8') as data:
-            for row in data:
-                if (((row.split(',')[0])[1:-1]).upper()).startswith(cityName):
-                    city = {}
-                    city['name'] = (row.split(',')[0])[1:-1]
-                    city['lat'] = (row.split(',')[2])[1:-1]
-                    city['lng'] = (row.split(',')[3])[1:-1]
-                    city['country'] = (row.split(',')[4])[1:-1]
-                    city['iso'] = (row.split(',')[6])[1:-1]
-                    cities['data'].append(city)
-                    count = count + 1
+        # with open(worldCities, encoding='utf8') as data:
+        #     for row in data:
+        #         if (((row.split(',')[0])[1:-1]).upper()).startswith(cityName):
+        #             city = {}
+        #             city['name'] = (row.split(',')[0])[1:-1]
+        #             city['lat'] = (row.split(',')[2])[1:-1]
+        #             city['lng'] = (row.split(',')[3])[1:-1]
+        #             city['country'] = (row.split(',')[4])[1:-1]
+        #             city['iso'] = (row.split(',')[6])[1:-1]
+        #             cities['data'].append(city)
+        #             count = count + 1
         inf = {}
         inf['count'] = count
         cities['metainf'].append(inf)
@@ -593,10 +594,10 @@ def confirmUsedPlaces(request):
     cur = con.cursor()
     
     # id z headersow
-    userid,array= json.loads(request.body).values()
+    userid,name,array= json.loads(request.body).values()
     # print(list(id.values())[0])
-    cur.execute("INSERT INTO list VALUES(?,?,?)",
-    (str(uuid.uuid4()),userid,str(array)))
+    cur.execute("INSERT INTO list VALUES(?,?,?,?)",
+    (str(uuid.uuid4()),userid,name,str(array)))
     con.commit()
 
     for row in cur.execute(f"SELECT * FROM list"):
@@ -612,7 +613,7 @@ def confirmUsedPlaces(request):
 def cityShowList(request):
 
 
-    if request.method != "POST":
+    if request.method != "GET":
         return HttpResponse(status=404)
     if request.body==None:
         return HttpResponse(status=422)
@@ -621,17 +622,67 @@ def cityShowList(request):
     cur = con.cursor()
 
     
-    id= json.loads(request.body)
-    print(list(id.values())[0])
+    # id= json.loads(request.body)
+    response=request.GET.get('id',"")
+    print(response)
+    # print(list(id.values())[0])
     # name
-    sql_select_query = f"select data from list where userid ='{list(id.values())[0]}'" 
+    sql_select_query = f"select id, name, data from list where userid ='{response}'" 
     print(id)
     sql_select_query=cur.execute(sql_select_query)
     sql_select_query = cur.fetchall() 
-    r=[]
+    # Dobra tu zoribc tablice z querry sqlite zamiast r=
+    # text = sql_select_query.split(',')
+    # print(text)
+    result=[]
 
     for i in sql_select_query:
-        print(i)
-        r.append(i)
-    print(r)
-    return JsonResponse(r, safe=False)
+        # text = i.split(',')
+        # i=eval(i[0])
+        # nazwa dodac XDDDD
+        r={
+            'id': i[0],
+            'name': i[1],
+            'list':eval(i[2])
+                }
+        result.append(r)
+        # print(i)
+    # print(r)
+    return JsonResponse(result, safe=False)
+
+@csrf_exempt 
+def searchQueryView(request, cityName='',endpoint='',signs=''):
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+    cur = con.cursor()
+
+    cityName = cityName.upper()
+    cities = {'metainf': [], 'data': []}
+
+    if cityName == '':
+        return HttpResponse(status=200)
+    else:
+        count = 0
+        places=cur.execute("SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name=? AND place.kinds=? AND place.name Like ? || '%'",(cityName,endpoint,signs) )
+        row = cur.fetchall() 
+        for places in row:
+
+            city={}
+            city['id']=places[0]
+            city['name']=places[1].decode('UTF8')
+            city['rate']=places[2]
+            city['kinds']=places[3]
+            city['wikidata'] = places[4]
+            city['point']={
+                'lon':places[6],
+                'lat':places[7]
+                           }
+            cities['data'].append(city)
+
+            count+=1
+
+        inf = {}
+        inf['count'] = count
+        cities['metainf'].append(inf)
+        if(inf['count'] == 0):
+            return JsonResponse({'message': 'Szukane miejsce nie istnieje.'}, status=404)
+        return JsonResponse(cities)

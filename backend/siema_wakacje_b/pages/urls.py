@@ -15,6 +15,8 @@ urlpatterns = [
     re_path(
         r'^city/($)|^city/(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/?$', views.cityQueryView),
     re_path(
+        r'^city/($)|^city/(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/(?P<endpoint>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/(?P<signs>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)', views.searchQueryView),
+    re_path(
         r'^(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/plan/(?P<kind>[a-zA-Z?_]*)/?$', views.pickHighestRate),
     re_path(
         r'^plan/save', views.savePlace),
