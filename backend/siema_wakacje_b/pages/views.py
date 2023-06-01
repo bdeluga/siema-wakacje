@@ -10,8 +10,11 @@ import requests
 import sqlite3
 import bcrypt
 
-
-
+# TODO
+# Naprawic wyswietlanie znakow polskich (ecoding)
+# headersy
+# Zrefaktoryzowac troche kodzik
+# i nie zapomniec o usunieciu komentarzy xd
 
 
 
