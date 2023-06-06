@@ -1,9 +1,11 @@
-POST http://127.0.0.1:8000/city/Warszawa
+GET http://127.0.0.1:8000/plan/showone/?id=1&name=fajnatablea2
 content-type: application/json
 
 {    
-    "email":"jan.kowalski@gmail.com",
-    "password": "Test123!"
+    "userid":"1",
+    "name":"fajnatablea3",
+    "array":["333","333"]
+
 
 
 }

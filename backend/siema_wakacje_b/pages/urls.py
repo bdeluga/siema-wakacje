@@ -23,7 +23,9 @@ urlpatterns = [
     re_path(
         r'^plan/confirm', views.confirmUsedPlaces),
     re_path(
-         r'^plan/show', views.cityShowList),  
+        r'^plan/showall/?$', views.cityShowList),  
+    re_path(
+        r'^plan/showone/?$', views.cityShowOneList), 
     re_path(
         r'^(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/(?P<place>[a-zA-Z?_]*)/?$', views.placesResponseView),
     re_path(

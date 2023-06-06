@@ -614,8 +614,6 @@ def confirmUsedPlaces(request):
 
 @csrf_exempt 
 def cityShowList(request):
-
-
     if request.method != "GET":
         return HttpResponse(status=404)
     if request.body==None:
@@ -623,8 +621,6 @@ def cityShowList(request):
 
     con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
     cur = con.cursor()
-
-    
     # id= json.loads(request.body)
     response=request.GET.get('id',"")
     print(response)
@@ -646,12 +642,46 @@ def cityShowList(request):
         r={
             'id': i[0],
             'name': i[1],
-            'list':eval(i[2])
                 }
         result.append(r)
         # print(i)
     # print(r)
     return JsonResponse(result, safe=False)
+@csrf_exempt 
+def cityShowOneList(request):
+
+
+    if request.method != "GET":
+        return HttpResponse(status=404)
+    if request.body==None:
+        return HttpResponse(status=422)
+
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+    cur = con.cursor()
+
+    
+    # id= json.loads(request.body)
+    responseId=request.GET.get('id',"")
+    responseName=request.GET.get('name',"")
+    print(responseId)
+    print(responseName)
+
+    # name
+    sql_select_query = f"select id, name, data from list where userid ='{responseId}' AND name='{responseName}'" 
+    sql_select_query=cur.execute(sql_select_query)
+    sql_select_query = cur.fetchone() 
+    # Dobra tu zoribc tablice z querry sqlite zamiast r=
+    # text = sql_select_query.split(',')
+    # print(text)
+    print(sql_select_query)
+    r={
+            'id': sql_select_query[0],
+            'name': sql_select_query[1],
+            'list':eval(sql_select_query[2])
+    }
+        # print(i)
+    # print(r)
+    return JsonResponse(r, safe=False)
 
 @csrf_exempt 
 def searchQueryView(request, cityName='',endpoint='',signs=''):
