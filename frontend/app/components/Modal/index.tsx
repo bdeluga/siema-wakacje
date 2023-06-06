@@ -59,7 +59,6 @@ const Modal = () => {
       }),
     });
   };
-  console.log(session?.user);
   return (
     <div
       className="absolute grid place-items-center z-[401] bg-slate-800/70
