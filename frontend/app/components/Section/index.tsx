@@ -17,6 +17,7 @@ const Section = ({ city }: Props) => {
   const setPoint = useHighlightStore((slice) => slice.setPoint);
   const [data, setData] = useState<Place[]>([]);
 
+  console.log(data);
   return (
     <div className="w-1/2 py-12 h-full form-control justify-center items-start gap-y-4">
       <h1 className=" self-center text-xl font-bold">{city}</h1>

@@ -7,6 +7,7 @@ export interface City {
 }
 
 export interface Place {
+  id: string;
   name: string;
   rate: number;
   point: {
