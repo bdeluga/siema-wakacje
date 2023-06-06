@@ -32,7 +32,7 @@ export const ThemeSwitcher = () => {
   const { isVisible, ref, setIsVisible } = useClickOutside();
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative z-[401]">
       <button
         className="btn m-1 w-14"
         onClick={() => setIsVisible((prev) => !prev)}
