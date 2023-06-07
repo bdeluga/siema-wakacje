@@ -9,11 +9,7 @@ const Page = async () => {
   const userID = session?.user.id;
   const res: Place[] = await fetch(
     `${env.API_URL}/plan/showall/?id=${userID}`
-  ).then((res) => {
-    return res.json();
-  });
-
-  console.log(res);
+  ).then((res) => res.json());
 
   return (
     <div className="w-screen h-screen grid place-items-center">
