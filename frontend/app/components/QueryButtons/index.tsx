@@ -1,11 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Place } from "~/app/utils/types";
-import {
-  useDataStore,
-  useMarkersStore,
-  useQueryKeyStore,
-} from "~/app/utils/useStore";
+import { useMarkersStore, useQueryKeyStore } from "~/app/utils/useStore";
 import { env } from "~/env.mjs";
 
 interface Props {
@@ -17,7 +13,6 @@ const QueryButtons = ({ city, set }: Props) => {
   const { queryKey, setKey } = useQueryKeyStore();
 
   const setMarkers = useMarkersStore((slice) => slice.setMarkers);
-  const setPlaces = useDataStore((slice) => slice.setData);
 
   useEffect(() => {
     // Define an async function to fetch data based on the queryKey
@@ -29,7 +24,6 @@ const QueryButtons = ({ city, set }: Props) => {
         set(response);
         //@ts-expect-error
         setMarkers(response.map((mark) => mark.point));
-        setPlaces(response);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -37,7 +31,7 @@ const QueryButtons = ({ city, set }: Props) => {
 
     // Call the fetchData function when the queryKey changes
     fetchData();
-  }, [queryKey, city, set, setMarkers, setPlaces]);
+  }, [queryKey, city, set, setMarkers]);
 
   return (
     <div className="mx-auto mt-2 flex space-x-4">

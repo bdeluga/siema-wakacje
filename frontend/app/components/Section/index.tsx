@@ -13,7 +13,6 @@ interface Props {
 }
 
 const Section = ({ city }: Props) => {
-  const { data: session } = useSession();
   const setPoint = useHighlightStore((slice) => slice.setPoint);
   const [data, setData] = useState<Place[]>([]);
 
