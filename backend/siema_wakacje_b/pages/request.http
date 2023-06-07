@@ -1,4 +1,4 @@
-GET http://127.0.0.1:8000/plan/showone/?id=1&name=fajnatablea2
+GET http://127.0.0.1:8000/plan/showone/?id=2&name=fajnatablea2
 content-type: application/json
 
 {    

@@ -616,8 +616,7 @@ def confirmUsedPlaces(request):
 def cityShowList(request):
     if request.method != "GET":
         return HttpResponse(status=404)
-    if request.body==None:
-        return HttpResponse(status=422)
+
 
     con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
     cur = con.cursor()
@@ -633,8 +632,10 @@ def cityShowList(request):
     # Dobra tu zoribc tablice z querry sqlite zamiast r=
     # text = sql_select_query.split(',')
     # print(text)
+    print(sql_select_query)
     result=[]
-
+    if not sql_select_query:
+        return HttpResponse(status=422)
     for i in sql_select_query:
         # text = i.split(',')
         # i=eval(i[0])
@@ -653,8 +654,7 @@ def cityShowOneList(request):
 
     if request.method != "GET":
         return HttpResponse(status=404)
-    if request.body==None:
-        return HttpResponse(status=422)
+
 
     con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
     cur = con.cursor()
@@ -669,7 +669,10 @@ def cityShowOneList(request):
     # name
     sql_select_query = f"select id, name, data from list where userid ='{responseId}' AND name='{responseName}'" 
     sql_select_query=cur.execute(sql_select_query)
-    sql_select_query = cur.fetchone() 
+    sql_select_query = cur.fetchone()
+    print(sql_select_query) 
+    if sql_select_query==None:
+        return HttpResponse(status=422)
     # Dobra tu zoribc tablice z querry sqlite zamiast r=
     # text = sql_select_query.split(',')
     # print(text)
