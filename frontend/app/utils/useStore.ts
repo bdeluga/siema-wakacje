@@ -50,26 +50,44 @@ export const useHighlightStore = create<HighlightPoint>((set) => ({
   setPoint: (point) => set(() => ({ point: point })),
 }));
 
-interface DataStore {
-  data: Place[];
+interface ModalStore {
   open: boolean;
-  setData: (places: Place[]) => void;
   setOpen: (state: boolean) => void;
 }
 
-export const useDataStore = create<DataStore>((set) => ({
-  data: [],
+export const useModalStore = create<ModalStore>((set) => ({
   open: false,
-  setData: (places) => set(() => ({ data: places })),
   setOpen: (state) => set(() => ({ open: state })),
 }));
 
 interface ListStore {
-  list: Place[];
+  list: {
+    name: string;
+    places: Place[];
+  };
   setList: (places: Place[]) => void;
+  setName: (name: string) => void;
 }
 
 export const useListStore = create<ListStore>((set) => ({
-  list: [],
-  setList: (places) => set(() => ({ list: places })),
+  list: {
+    name: "Nowa lista",
+    places: [],
+  },
+  setName: (name: string) =>
+    set((prevState) => ({
+      ...prevState,
+      list: {
+        ...prevState.list,
+        name,
+      },
+    })),
+  setList: (places) =>
+    set((prevState) => ({
+      ...prevState,
+      list: {
+        ...prevState.list,
+        places,
+      },
+    })),
 }));
