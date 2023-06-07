@@ -662,25 +662,24 @@ def cityShowOneList(request):
     
     # id= json.loads(request.body)
     responseId=request.GET.get('id',"")
-    responseName=request.GET.get('name',"")
     print(responseId)
-    print(responseName)
 
     # name
-    sql_select_query = f"select id, name, data from list where userid ='{responseId}' AND name='{responseName}'" 
+    sql_select_query = f"select id, name, data from list where id ='{responseId}'" 
     sql_select_query=cur.execute(sql_select_query)
     sql_select_query = cur.fetchone()
-    print(sql_select_query) 
+    # print(sql_select_query) 
     if sql_select_query==None:
         return HttpResponse(status=422)
     # Dobra tu zoribc tablice z querry sqlite zamiast r=
     # text = sql_select_query.split(',')
     # print(text)
-    print(sql_select_query)
+    print(sql_select_query[2])
+    
     r={
             'id': sql_select_query[0],
             'name': sql_select_query[1],
-            'list':eval(sql_select_query[2])
+            'list':eval(sql_select_query[2])["places"]
     }
         # print(i)
     # print(r)
