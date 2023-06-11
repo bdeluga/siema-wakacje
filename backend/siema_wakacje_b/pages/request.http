@@ -1,7 +1,10 @@
-POST http://127.0.0.1:8000/plan/remove
+PUT http://127.0.0.1:8000/plan/change
 content-type: application/json
 
 {    
-    "id":"7ca0ee0b-df7e-4252-b109-45b5103c8313"
+    "id":"f6c8e20a-ba6d-4e26-8ef1-86503b772016",
+    "name":"nazwanazwa123123"
+
+
 
 }

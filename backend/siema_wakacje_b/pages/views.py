@@ -642,7 +642,7 @@ def searchQueryView(request, cityName='',endpoint='',signs=''):
     
 @csrf_exempt 
 def changePlan(request):
-    if request.method != "POST":
+    if request.method != "PUT":
         return HttpResponse(status=404)
     if request.body==None:
         return HttpResponse(status=422)
@@ -656,28 +656,27 @@ def changePlan(request):
     # sql_select_query = ("UPDATE list SET name = ? WHERE id=?",(id,name))
 
     cur.execute("UPDATE list SET name = ? WHERE id=?",(name,id))
-
-    sql_select_query = f"select id, name, data from list" 
+    con.commit()
+    sql_select_query = f"select id, name, data from list where id ='{id}'" 
     sql_select_query=cur.execute(sql_select_query)
     sql_select_query = cur.fetchone()
-    print(sql_select_query)
 
     return HttpResponse(status=200)
 
     
 @csrf_exempt 
 def removePlan(request):
-    if request.method != "POST":
+    if request.method != "DELETE":
         return HttpResponse(status=404)
     if request.body==None:
         return HttpResponse(status=422)
 
     con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
     cur = con.cursor()
+ 
     
-    
-    id= json.loads(request.body.decode('UTF-8')).values()
-    id=(list(id)[0])
-    user=cur.execute("DELETE from list WHERE id=?",(id,))
-    
+    responseId=request.GET.get('id',"")
+    user=cur.execute("DELETE from list WHERE id=?",(responseId,))
+    con.commit()
+
     return HttpResponse(status=200)
