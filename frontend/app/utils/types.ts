@@ -9,6 +9,7 @@ export interface City {
 export interface Place {
   id: string;
   name: string;
+  img: string;
   rate: number;
   point: {
     lat: number;
