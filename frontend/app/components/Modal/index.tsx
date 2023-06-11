@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { City, Place } from "~/app/utils/types";
-import Image from "next/image";
 import Rating from "../Section/Rating";
 import { useListStore, useModalStore } from "~/app/utils/useStore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -193,8 +192,8 @@ const Modal = () => {
                     <div className="mr-4 flex h-full items-center justify-center ">
                       <div className="avatar">
                         <div className="w-32 rounded">
-                          <Image
-                            src="/hotel.webp"
+                          <img
+                            src={place.img}
                             alt={place.name}
                             width={256}
                             height={256}
@@ -223,8 +222,8 @@ const Modal = () => {
                   <div className="mr-4 flex h-full items-center justify-center">
                     <div className="avatar">
                       <div className="w-32 rounded">
-                        <Image
-                          src="/hotel.webp"
+                        <img
+                          src={place.img}
                           alt={place.name}
                           width={256}
                           height={256}
