@@ -2,9 +2,9 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { City } from "~/lib/types";
 import { env } from "~/env.mjs";
 import Link from "next/link";
+import { City } from "../utils/types";
 
 export default function SearchCity() {
   const [input, setInput] = useState("");
