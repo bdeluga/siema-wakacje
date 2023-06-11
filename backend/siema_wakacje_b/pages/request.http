@@ -1,11 +1,7 @@
-GET http://127.0.0.1:8000/plan/showone/?id=5d14bf37-218a-4614-97b2-5dc314caa758
+POST http://127.0.0.1:8000/plan/remove
 content-type: application/json
 
 {    
-    "userid":"1",
-    "name":"fajnatablea3",
-    "array":["333","333"]
-
-
+    "id":"7ca0ee0b-df7e-4252-b109-45b5103c8313"
 
 }

@@ -23,6 +23,10 @@ urlpatterns = [
     re_path(
         r'^plan/confirm', views.confirmUsedPlaces),
     re_path(
+        r'^plan/remove', views.removePlan),
+    re_path(
+        r'^plan/change', views.changePlan),
+    re_path(
         r'^plan/showall/?$', views.cityShowList),  
     re_path(
         r'^plan/showone/?$', views.cityShowOneList), 
