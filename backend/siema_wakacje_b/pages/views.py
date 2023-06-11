@@ -297,6 +297,7 @@ def cityQueryView(request, cityName=''):
     cur = con.cursor()
 
     cityName = cityName.upper()
+    print(cityName)
     # sql_select_query = f"select * from city where name Like ?", (starting_letters + '%',)) 
     cityall=cur.execute("select * from city where name Like ? || '%'", (cityName,))
     cityall = cur.fetchall()
@@ -306,6 +307,7 @@ def cityQueryView(request, cityName=''):
     # sciezka (upper liwiduje mniejsze wieksze znaki)
     # lista na miasta
     cities = {'metainf': [], 'data': []}
+    
     # znajduje miasta ktore sa na jakas litere
     # jak to dziala to nie czas na tlumaczenie
     if cityName == '':
@@ -316,8 +318,8 @@ def cityQueryView(request, cityName=''):
             # print(row)
             city={}
             city['name']=row[1]
-            city['lat']=str(row[3])
-            city['lng']=str(row[4])
+            city['lon']=str(row[3])
+            city['lat']=str(row[4])
             city['country']="Poland"
             city['iso'] = row[2]
             cities['data'].append(city)
