@@ -24,7 +24,7 @@ export default function Register() {
         username: formData.username,
         password: formData.password,
         email: formData.email,
-        image: "/maserak.jpg",
+        image: "/default.svg",
       }),
     });
     setIsFetching(false);
@@ -94,14 +94,7 @@ export default function Register() {
               />
             </label>
           </div>
-          <div className="form-control mb-4">
-            <label className="label" htmlFor="password">
-              <span className="label-text text-white">Twoje zdjęcie</span>
-            </label>
-            <label className="input-group">
-              <input disabled placeholder="coming soon" />
-            </label>
-          </div>
+
           {isFetching ? (
             <button className="loading btn">Logowanie...</button>
           ) : (
