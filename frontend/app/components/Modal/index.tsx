@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { City, Place } from "~/app/utils/types";
 import Image from "next/image";
 import Rating from "../Section/Rating";
-import { useDataStore, useListStore } from "~/app/utils/useStore";
+import { useListStore, useModalStore } from "~/app/utils/useStore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
@@ -17,18 +17,16 @@ import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 const Modal = () => {
-  const { data, setData, open, setOpen } = useDataStore((slice) => ({
-    data: slice.data,
-    setData: slice.setData,
-    open: slice.open,
-    setOpen: slice.setOpen,
-  }));
-  const { list, setList } = useListStore();
-  const [search, setSearch] = useState(data);
+  const [data, setData] = useState<Place[]>();
+  const { list, setList, setName } = useListStore();
   const [queryKey, setQueryKey] = useState("hotels");
   const { city } = useParams() as { city: string };
   const { data: session } = useSession();
+
+  const { open, setOpen } = useModalStore();
+
   useEffect(() => {
+    if (!open) return;
     // Define an async function to fetch data based on the queryKey
     const fetchData = async () => {
       try {
@@ -37,14 +35,13 @@ const Modal = () => {
         ).then((res) => res.json());
 
         setData(response);
-        setSearch(response);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     // Call the fetchData function when the queryKey changes
     fetchData();
-  }, [queryKey, city, open, setData]);
+  }, [queryKey, city, setData, open]);
 
   if (!open) return null;
 
@@ -55,9 +52,11 @@ const Modal = () => {
       //@ts-ignore will handle it
       body: JSON.stringify({
         id: session?.user.id,
+        name: list.name,
         list: list,
       }),
     });
+    setList([]);
   };
   return (
     <div
@@ -65,12 +64,11 @@ const Modal = () => {
      w-screen h-screen"
     >
       <div className="bg-slate-700 shadow-md shadow-slate-700  rounded-3xl w-[1000px] h-[800px] pb-36  relative">
+        <h1 className="text-center text-lg pt-4">{list.name}</h1>
         <button
           className="top-3 right-4 absolute"
           onClick={() => {
             setOpen(false);
-            setData([]);
-            setSearch([]);
           }}
         >
           <FontAwesomeIcon icon={faX} />
@@ -140,16 +138,8 @@ const Modal = () => {
                 type="text"
                 placeholder="Search…"
                 className="input input-bordered"
-                onChange={(e) =>
-                  setSearch(
-                    data.filter((place) =>
-                      place.name
-                        .toLowerCase()
-                        .includes(e.target.value.toLowerCase())
-                    )
-                  )
-                }
               />
+
               <button className="btn btn-square">
                 <FontAwesomeIcon icon={faSearch} />
               </button>
@@ -168,12 +158,13 @@ const Modal = () => {
                   type="text"
                   placeholder="Nazwa..."
                   className="input input-bordered"
+                  onChange={(e) => setName(e.target.value)}
                 />
               </div>
             </div>
             <div className="indicator">
               <span className="indicator-item badge badge-secondary">
-                {list.length}
+                {list.places.length}
               </span>
               <button className="btn flex gap-2" onClick={handleSend}>
                 Podsumowanie
@@ -182,18 +173,18 @@ const Modal = () => {
           </div>
         </div>
         <div className=" flex flex-col justify-start items-center flex-1 h-full w-full overflow-auto scrollbar  max-h-full ">
-          {search?.map((place, idx) => (
+          {data?.map((place) => (
             <button
               className="btn-ghost flex p-4"
-              key={idx}
+              key={place.id}
               onClick={() => {
-                if (list.find((val) => val === place)) {
-                  return setList(list.filter((item) => item !== place));
+                if (list.places.find((val) => val === place)) {
+                  return setList(list.places.filter((item) => item !== place));
                 }
-                setList([...list, place]);
+                setList([...list.places, place]);
               }}
             >
-              {list.find((saved) => saved === place) ? (
+              {list.places.find((saved) => saved === place) ? (
                 <div className="h-full relative">
                   <div className="absolute w-full h-full flex justify-center items-center">
                     <FontAwesomeIcon icon={faCheck} className="text-4xl" />
@@ -259,7 +250,7 @@ const Modal = () => {
               )}
             </button>
           ))}
-          {!search.length && <p className="text-2xl">Brak danych.</p>}
+          {!data?.length && <p className="text-2xl">Brak danych.</p>}
         </div>
       </div>
     </div>

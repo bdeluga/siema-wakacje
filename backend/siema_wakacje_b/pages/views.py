@@ -10,7 +10,11 @@ import requests
 import sqlite3
 import bcrypt
 
-
+# TODO
+# Naprawic wyswietlanie znakow polskich (ecoding)
+# headersy
+# Zrefaktoryzowac troche kodzik
+# i nie zapomniec o usunieciu komentarzy xd
 
 
 
@@ -163,7 +167,8 @@ def placesResponseView(request, cityName, place):
                 'kinds':places[3],
                 'wikidata':places[4],
                 "point":{ 'lon':places[6],
-                'lat':places[7]}
+                'lat':places[7]},
+                'img':places[8]
             }
             result.append(r)
         return JsonResponse(result, safe=False)
@@ -180,7 +185,8 @@ def placesResponseView(request, cityName, place):
                 'kinds':places[3],
                 'wikidata':places[4],
                 "point":{ 'lon':places[6],
-                'lat':places[7]}
+                'lat':places[7]},
+                'img':places[8]
             }
             result.append(r)
         return JsonResponse(result, safe=False)
@@ -198,7 +204,8 @@ def placesResponseView(request, cityName, place):
                 'kinds':places[3],
                 'wikidata':places[4],
                 "point":{ 'lon':places[6],
-                'lat':places[7]}
+                'lat':places[7]},
+                'img':places[8]
             }
             result.append(r)
         return JsonResponse(result, safe=False)
@@ -216,7 +223,8 @@ def placesResponseView(request, cityName, place):
                 'kinds':places[3],
                 'wikidata':places[4],
                 "point":{ 'lon':places[6],
-                'lat':places[7]}
+                'lat':places[7]},
+                'img':places[8]
             }
             result.append(r)
         return JsonResponse(result, safe=False)
@@ -233,7 +241,8 @@ def placesResponseView(request, cityName, place):
                 'kinds':places[3],
                 'wikidata':places[4],
                 "point":{ 'lon':places[6],
-                'lat':places[7]}
+                'lat':places[7]},
+                'img':places[8]
             }
             result.append(r)
         return JsonResponse(result, safe=False)
@@ -250,55 +259,11 @@ def placesResponseView(request, cityName, place):
                 'kinds':places[3],
                 'wikidata':places[4],
                 "point":{ 'lon':places[6],
-                'lat':places[7]}
+                'lat':places[7]},
+                'img':places[8]
             }
             result.append(r)
         return JsonResponse(result, safe=False)
-
-    # worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
-    # lat = -1
-    # lng = -1
-    # with open(worldCities, encoding='utf8') as data:
-    #         for row in data:
-    #             if (((row.split(',')[0])[1:-1]).upper()).startswith(cityName):
-    #                 lat = (row.split(',')[2])[1:-1]
-    #                 lng = (row.split(',')[3])[1:-1]
-    # if place == 'hotels':
-    #     result = []
-    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=accomodations&format=json&apikey={settings.TRIP_KEY}'
-    #     data = (requests.get(url)).json()
-       
-    #     return JsonResponse(cleanJson(data), safe=False)
-    # if place == 'fun':
-    #     result = []
-    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=amusement_parks,ferris_wheels,miniature_parks,water_parks,baths_and_saunas,theatres_and_entertainments,urban_environment&format=json&apikey={settings.TRIP_KEY}'
-    #     data = (requests.get(url)).json()
-           
-    #     return JsonResponse(cleanJson(data), safe=False)
-    # if place == 'recreations':
-    #     result = []
-    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=gardens_and_parks,fountains,beaches,geological_formations,natural_springs,nature_reserves,water,view_points,sport,bicycle_rental&format=json&apikey={settings.TRIP_KEY}'
-    #     data = (requests.get(url)).json()
-          
-    #     return JsonResponse(cleanJson(data), safe=False)
-    # if place == 'night_life':
-    #     result = []
-    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=alcohol,casino,nightclubs,hookah&format=json&apikey={settings.TRIP_KEY}'
-    #     data = (requests.get(url)).json()
-             
-    #     return JsonResponse(cleanJson(data), safe=False)
-    # if place == 'restaurants':
-    #     result = []
-    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=foods&format=json&apikey={settings.TRIP_KEY}'
-    #     data = (requests.get(url)).json()
-          
-    #     return JsonResponse(cleanJson(data), safe=False)
-    # if place == 'history':
-    #     result = []
-    #     url = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=museums,bridges,historic_architecture,lighthouses,towers,archaeology,burial_places,fortifications,historical_places,monuments_and_memorials,religion&format=json&apikey={settings.TRIP_KEY}'
-    #     data = (requests.get(url)).json()
-        
-    #     return JsonResponse(cleanJson(data), safe=False)
     return JsonResponse({})
 @csrf_exempt 
 def cityPageView(request, cityName=''):
@@ -347,28 +312,16 @@ def cityQueryView(request, cityName=''):
         return HttpResponse(status=200)
     else:
         count = 0
-        # for row in cityall:
-        #     print(row)
-        #     city={}
-        #     city['name']=row[1]
-        #     city['lat']=str(row[3])
-        #     city['lng']=str(row[4])
-        #     city['country']="Poland"
-        #     city['iso'] = row[2]
-        #     cities['data'].append(city)
-        #     count = count + 1
-
-        with open(worldCities, encoding='utf8') as data:
-            for row in data:
-                if (((row.split(',')[0])[1:-1]).upper()).startswith(cityName):
-                    city = {}
-                    city['name'] = (row.split(',')[0])[1:-1]
-                    city['lat'] = (row.split(',')[2])[1:-1]
-                    city['lng'] = (row.split(',')[3])[1:-1]
-                    city['country'] = (row.split(',')[4])[1:-1]
-                    city['iso'] = (row.split(',')[6])[1:-1]
-                    cities['data'].append(city)
-                    count = count + 1
+        for row in cityall:
+            # print(row)
+            city={}
+            city['name']=row[1]
+            city['lat']=str(row[3])
+            city['lng']=str(row[4])
+            city['country']="Poland"
+            city['iso'] = row[2]
+            cities['data'].append(city)
+            count = count + 1
         inf = {}
         inf['count'] = count
         cities['metainf'].append(inf)
@@ -524,37 +477,7 @@ def pickHighestRate(request, cityName, kind):
             'lat':places[7]
         }
         historyData.sort(key=operator.itemgetter('rate'), reverse=True)
-        result['history'] = historyData[0:5]
-    # if kind == 'hotels':
-    #     hotelsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=accomodations&format=json&apikey={settings.TRIP_KEY}'
-    #     hotelsData = cleanJsonPlan((requests.get(hotelsUrl)).json())
-    #     hotelsData.sort(key=operator.itemgetter('rate'), reverse=True)
-    #     result['hotels'] = hotelsData[0:5]
-    # if kind == 'fun':
-    #     funUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=amusement_parks,ferris_wheels,miniature_parks,water_parks,baths_and_saunas,theatres_and_entertainments,urban_environment&format=json&apikey={settings.TRIP_KEY}'
-    #     funData = cleanJsonPlan((requests.get(funUrl)).json())
-    #     funData.sort(key=operator.itemgetter('rate'), reverse=True)
-    #     result['fun'] = funData[0:5]     
-    # if kind == 'recreations':
-    #     recreationsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=gardens_and_parks,fountains,beaches,geological_formations,natural_springs,nature_reserves,water,view_points,sport,bicycle_rental&format=json&apikey={settings.TRIP_KEY}'
-    #     recreationsData = cleanJsonPlan((requests.get(recreationsUrl)).json())
-    #     recreationsData.sort(key=operator.itemgetter('rate'), reverse=True)   
-    #     result['recreations'] = recreationsData[0:5]
-    # if kind == 'night_life':
-    #     nightLifeUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=alcohol,casino,nightclubs,hookah&format=json&apikey={settings.TRIP_KEY}'
-    #     nightLifeData = cleanJsonPlan((requests.get(nightLifeUrl)).json())
-    #     nightLifeData.sort(key=operator.itemgetter('rate'), reverse=True)
-    #     result['nightLife'] = nightLifeData[0:5]
-    # if kind == 'restaurants':
-    #     restaurantsUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=foods&format=json&apikey={settings.TRIP_KEY}'
-    #     restaurantsData = cleanJsonPlan((requests.get(restaurantsUrl)).json())
-    #     restaurantsData.sort(key=operator.itemgetter('rate'), reverse=True)
-    #     result['restaurants'] = restaurantsData[0:5]
-    # if kind == 'history':
-    #     historyUrl = f'https://api.opentripmap.com/0.1/en/places/radius?radius=15000&lon={lng}&lat={lat}&kinds=museums,bridges,historic_architecture,lighthouses,towers,archaeology,burial_places,fortifications,historical_places,monuments_and_memorials,religion&format=json&apikey={settings.TRIP_KEY}'
-    #     historyData = cleanJsonPlan((requests.get(historyUrl)).json())
-    #     historyData.sort(key=operator.itemgetter('rate'), reverse=True)
-    #     result['history'] = historyData[0:5]      
+        result['history'] = historyData[0:5]    
     return JsonResponse(result, safe=False)
 
 @csrf_exempt 
@@ -582,7 +505,6 @@ def savePlace(request):
         except:
             return HttpResponse('nieok')
     print(settings.USED_PLACES)
-    # settings.USED_PLACES.clear()
 
     return HttpResponse('Rekordzik juz jest nie martw sie:)')
         
@@ -593,10 +515,10 @@ def confirmUsedPlaces(request):
     cur = con.cursor()
     
     # id z headersow
-    userid,array= json.loads(request.body).values()
+    userid,name,array= json.loads(request.body).values()
     # print(list(id.values())[0])
-    cur.execute("INSERT INTO list VALUES(?,?,?)",
-    (str(uuid.uuid4()),userid,str(array)))
+    cur.execute("INSERT INTO list VALUES(?,?,?,?)",
+    (str(uuid.uuid4()),userid,name,str(array)))
     con.commit()
 
     for row in cur.execute(f"SELECT * FROM list"):
@@ -610,9 +532,117 @@ def confirmUsedPlaces(request):
 
 @csrf_exempt 
 def cityShowList(request):
+    if request.method != "GET":
+        return HttpResponse(status=404)
 
 
-    if request.method != "POST":
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+    cur = con.cursor()
+    # id= json.loads(request.body)
+    response=request.GET.get('id',"")
+    print(response)
+    # print(list(id.values())[0])
+    # name
+    sql_select_query = f"select id, name, data from list where userid ='{response}'" 
+    print(id)
+    sql_select_query=cur.execute(sql_select_query)
+    sql_select_query = cur.fetchall() 
+    # Dobra tu zoribc tablice z querry sqlite zamiast r=
+    # text = sql_select_query.split(',')
+    # print(text)
+    print(sql_select_query)
+    result=[]
+    if not sql_select_query:
+        return HttpResponse(status=422)
+    for i in sql_select_query:
+        # text = i.split(',')
+        # i=eval(i[0])
+        # nazwa dodac XDDDD
+        r={
+            'id': i[0],
+            'name': i[1],
+                }
+        result.append(r)
+        # print(i)
+    # print(r)
+    return JsonResponse(result, safe=False)
+@csrf_exempt 
+def cityShowOneList(request):
+
+
+    if request.method != "GET":
+        return HttpResponse(status=404)
+
+
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+    cur = con.cursor()
+
+    
+    # id= json.loads(request.body)
+    responseId=request.GET.get('id',"")
+    print(responseId)
+
+    # name
+    sql_select_query = f"select id, name, data from list where id ='{responseId}'" 
+    sql_select_query=cur.execute(sql_select_query)
+    sql_select_query = cur.fetchone()
+    # print(sql_select_query) 
+    if sql_select_query==None:
+        return HttpResponse(status=422)
+    # Dobra tu zoribc tablice z querry sqlite zamiast r=
+    # text = sql_select_query.split(',')
+    # print(text)
+    print(sql_select_query[2])
+    
+    r={
+            'id': sql_select_query[0],
+            'name': sql_select_query[1],
+            'list':eval(sql_select_query[2])["places"]
+    }
+        # print(i)
+    # print(r)
+    return JsonResponse(r, safe=False)
+
+@csrf_exempt 
+def searchQueryView(request, cityName='',endpoint='',signs=''):
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+    cur = con.cursor()
+
+    cityName = cityName.upper()
+    cities = {'metainf': [], 'data': []}
+
+    if cityName == '':
+        return HttpResponse(status=200)
+    else:
+        count = 0
+        places=cur.execute("SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name=? AND place.kinds=? AND place.name Like ? || '%'",(cityName,endpoint,signs) )
+        row = cur.fetchall() 
+        for places in row:
+
+            city={}
+            city['id']=places[0]
+            city['name']=places[1].decode('UTF8')
+            city['rate']=places[2]
+            city['kinds']=places[3]
+            city['wikidata'] = places[4]
+            city['point']={
+                'lon':places[6],
+                'lat':places[7]
+                           }
+            cities['data'].append(city)
+
+            count+=1
+
+        inf = {}
+        inf['count'] = count
+        cities['metainf'].append(inf)
+        if(inf['count'] == 0):
+            return JsonResponse({'message': 'Szukane miejsce nie istnieje.'}, status=404)
+        return JsonResponse(cities)
+    
+@csrf_exempt 
+def changePlan(request):
+    if request.method != "PUT":
         return HttpResponse(status=404)
     if request.body==None:
         return HttpResponse(status=422)
@@ -621,16 +651,32 @@ def cityShowList(request):
     cur = con.cursor()
 
     
-    id= json.loads(request.body)
-    print(list(id.values())[0])
-    sql_select_query = f"select data from list where userid ='{list(id.values())[0]}'" 
-    print(id)
-    sql_select_query=cur.execute(sql_select_query)
-    sql_select_query = cur.fetchall() 
-    r=[]
+    id,name= json.loads(request.body.decode('UTF-8')).values()
+    print(id,name)
+    # sql_select_query = ("UPDATE list SET name = ? WHERE id=?",(id,name))
 
-    for i in sql_select_query:
-        print(i)
-        r.append(i)
-    print(r)
-    return JsonResponse(r, safe=False)
+    cur.execute("UPDATE list SET name = ? WHERE id=?",(name,id))
+    con.commit()
+    sql_select_query = f"select id, name, data from list where id ='{id}'" 
+    sql_select_query=cur.execute(sql_select_query)
+    sql_select_query = cur.fetchone()
+
+    return HttpResponse(status=200)
+
+    
+@csrf_exempt 
+def removePlan(request):
+    if request.method != "DELETE":
+        return HttpResponse(status=404)
+    if request.body==None:
+        return HttpResponse(status=422)
+
+    con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
+    cur = con.cursor()
+ 
+    
+    responseId=request.GET.get('id',"")
+    user=cur.execute("DELETE from list WHERE id=?",(responseId,))
+    con.commit()
+
+    return HttpResponse(status=200)

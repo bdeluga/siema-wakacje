@@ -15,13 +15,21 @@ urlpatterns = [
     re_path(
         r'^city/($)|^city/(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/?$', views.cityQueryView),
     re_path(
+        r'^city/($)|^city/(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/(?P<endpoint>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/(?P<signs>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)', views.searchQueryView),
+    re_path(
         r'^(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/plan/(?P<kind>[a-zA-Z?_]*)/?$', views.pickHighestRate),
     re_path(
         r'^plan/save', views.savePlace),
     re_path(
         r'^plan/confirm', views.confirmUsedPlaces),
     re_path(
-         r'^plan/show', views.cityShowList),  
+        r'^plan/remove', views.removePlan),
+    re_path(
+        r'^plan/change', views.changePlan),
+    re_path(
+        r'^plan/showall/?$', views.cityShowList),  
+    re_path(
+        r'^plan/showone/?$', views.cityShowOneList), 
     re_path(
         r'^(?P<cityName>[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s?-]*)/(?P<place>[a-zA-Z?_]*)/?$', views.placesResponseView),
     re_path(
