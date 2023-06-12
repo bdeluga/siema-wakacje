@@ -318,8 +318,8 @@ def cityQueryView(request, cityName=''):
             # print(row)
             city={}
             city['name']=row[1]
-            city['lon']=str(row[3])
             city['lat']=str(row[4])
+            city['lng']=str(row[3])
             city['country']="Poland"
             city['iso'] = row[2]
             cities['data'].append(city)
