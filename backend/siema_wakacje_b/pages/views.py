@@ -9,6 +9,8 @@ import osmnx as ox
 import requests
 import sqlite3
 import bcrypt
+import unicodedata
+
 
 # TODO
 # Naprawic wyswietlanie znakow polskich (ecoding)
@@ -315,9 +317,13 @@ def cityQueryView(request, cityName=''):
     else:
         count = 0
         for row in cityall:
+            print(cityall[0])
+            sd = json.dumps(row[1],ensure_ascii=False)
+            s2 = json.loads(sd)
+            s2.encode('utf-8')
             # print(row)
             city={}
-            city['name']=row[1]
+            city['name']=s2
             city['lat']=str(row[4])
             city['lng']=str(row[3])
             city['country']="Poland"
@@ -606,18 +612,19 @@ def cityShowOneList(request):
     return JsonResponse(r, safe=False)
 
 @csrf_exempt 
-def searchQueryView(request, cityName='',endpoint='',signs=''):
+def searchQueryView(request, cityName='',endpoint=''):
     con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
     cur = con.cursor()
 
     cityName = cityName.upper()
     cities = {'metainf': [], 'data': []}
+    search=request.GET.get('search',"")
 
     if cityName == '':
         return HttpResponse(status=200)
     else:
         count = 0
-        places=cur.execute("SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name=? AND place.kinds=? AND place.name Like ? || '%'",(cityName,endpoint,signs) )
+        places=cur.execute("SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name=? AND place.kinds=? AND place.name Like ? || '%'",(cityName,endpoint,search) )
         row = cur.fetchall() 
         for places in row:
 
@@ -631,6 +638,8 @@ def searchQueryView(request, cityName='',endpoint='',signs=''):
                 'lon':places[6],
                 'lat':places[7]
                            }
+            city['img']:places[8]
+
             cities['data'].append(city)
 
             count+=1
