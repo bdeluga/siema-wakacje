@@ -9,7 +9,8 @@ import osmnx as ox
 import requests
 import sqlite3
 import bcrypt
-import unicodedata
+
+
 
 
 # TODO
@@ -297,7 +298,8 @@ def cityPageView(request, cityName=''):
 def cityQueryView(request, cityName=''):
     con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
     cur = con.cursor()
-
+    # url=urllib.parse.unquote(cityName).decode() 
+    # print(url) 
     cityName = cityName.upper()
     print(cityName)
     # sql_select_query = f"select * from city where name Like ?", (starting_letters + '%',)) 
@@ -305,7 +307,7 @@ def cityQueryView(request, cityName=''):
     cityall = cur.fetchall()
     print(cityall) 
     # nasza baza 40k miast
-    worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
+    # worldCities = os.path.join(settings.DATA_DIR, 'worldcities.csv')
     # sciezka (upper liwiduje mniejsze wieksze znaki)
     # lista na miasta
     cities = {'metainf': [], 'data': []}
@@ -318,12 +320,11 @@ def cityQueryView(request, cityName=''):
         count = 0
         for row in cityall:
             print(cityall[0])
-            sd = json.dumps(row[1],ensure_ascii=False)
-            s2 = json.loads(sd)
-            s2.encode('utf-8')
-            # print(row)
+
             city={}
-            city['name']=s2
+
+
+            city['name']=row[1]
             city['lat']=str(row[4])
             city['lng']=str(row[3])
             city['country']="Poland"
@@ -337,7 +338,7 @@ def cityQueryView(request, cityName=''):
         if(inf['count'] == 0):
             return JsonResponse({'message': 'Szukane miasto nie istnieje.'}, status=404)
 
-        return JsonResponse(cities)
+        return JsonResponse(cities,safe=False,json_dumps_params={'ensure_ascii': False})
 
 @csrf_exempt 
 def cleanJson(data):

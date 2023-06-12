@@ -1,4 +1,4 @@
-GET  http://127.0.0.1:8000/szczecin/hotels/?search=hot
+GET  http://127.0.0.1:8000/city/kraków
 content-type: application/json
 
 {    
