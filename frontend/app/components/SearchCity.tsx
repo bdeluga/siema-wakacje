@@ -52,24 +52,26 @@ export default function SearchCity() {
             <FontAwesomeIcon icon={faMagnifyingGlass} />
           </Link>
         </div>
-        {input.length > 2 && (
+        {input.length >= 3 && (
           <div className="scrollbar card mt-1 flex max-h-56 w-full flex-col space-y-1 overflow-y-auto rounded-sm bg-base-100 p-1">
             {loading ? (
               //   <CitySkeleton count={4} />
               "loading..."
             ) : (
               <>
-                {cities?.map((city, idx) => (
-                  <button
-                    className="btn animate-none"
-                    key={idx}
-                    onClick={() => setInput(city.name)}
-                  >
-                    <p>
-                      {city.name}, {city.iso}
-                    </p>
-                  </button>
-                ))}
+                {cities
+                  ? cities.map((city, idx) => (
+                      <button
+                        className="btn animate-none"
+                        key={idx}
+                        onClick={() => setInput(city.name)}
+                      >
+                        <p>
+                          {city.name}, {city.iso}
+                        </p>
+                      </button>
+                    ))
+                  : "Brak wyników"}
               </>
             )}
           </div>
