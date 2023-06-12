@@ -48,31 +48,32 @@ export default function SearchCity() {
             className="input-bordered input"
             value={input}
           />
-          <Link href={`city/${input}`} className="btn">
+          <Link href={`city/${input}`.toLocaleLowerCase()} className="btn">
             <FontAwesomeIcon icon={faMagnifyingGlass} />
           </Link>
         </div>
-
-        <div className="scrollbar card mt-1 flex max-h-56 w-full flex-col space-y-1 overflow-y-auto rounded-sm bg-base-100 p-1">
-          {loading ? (
-            //   <CitySkeleton count={4} />
-            "loading..."
-          ) : (
-            <>
-              {cities?.map((city, idx) => (
-                <button
-                  className="btn animate-none"
-                  key={idx}
-                  onClick={() => setInput(city.name)}
-                >
-                  <p>
-                    {city.name}, {city.iso}
-                  </p>
-                </button>
-              ))}
-            </>
-          )}
-        </div>
+        {input.length > 2 && (
+          <div className="scrollbar card mt-1 flex max-h-56 w-full flex-col space-y-1 overflow-y-auto rounded-sm bg-base-100 p-1">
+            {loading ? (
+              //   <CitySkeleton count={4} />
+              "loading..."
+            ) : (
+              <>
+                {cities?.map((city, idx) => (
+                  <button
+                    className="btn animate-none"
+                    key={idx}
+                    onClick={() => setInput(city.name)}
+                  >
+                    <p>
+                      {city.name}, {city.iso}
+                    </p>
+                  </button>
+                ))}
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
