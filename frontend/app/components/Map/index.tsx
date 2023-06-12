@@ -12,7 +12,7 @@ import {
 //@ts-expect-error no types
 import MarkerClusterGroup from "@changey/react-leaflet-markercluster";
 import L, { LatLngExpression } from "leaflet";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
   center: number[];
@@ -23,6 +23,7 @@ export default function LeafletMap({ center }: Props) {
   const markers = useMarkersStore((slice) => slice.markers);
   const queryKey = useQueryKeyStore((slice) => slice.queryKey);
   const highlightedPoint = useHighlightStore((slice) => slice.point);
+  const [mounted, setMounted] = useState(false);
   const markerIcon = new L.Icon({
     iconUrl: `/markers/${queryKey}.png`,
     iconSize: [40, 40],
@@ -37,6 +38,12 @@ export default function LeafletMap({ center }: Props) {
       });
     }
   }, [highlightedPoint]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="w-1/2 py-24 px-8">
