@@ -618,17 +618,43 @@ def searchQueryView(request, cityName='',endpoint=''):
     cur = con.cursor()
 
     cityName = cityName.upper()
-    cities = {'metainf': [], 'data': []}
-    search=request.GET.get('search',"")
+    cities = { 'data': []}
+    print("XD")
+    search=request.GET.get('search',)
+    if search==None:
+        if cityName == '':
+            return HttpResponse(status=200)
+        else:
+            count = 0
+            places=cur.execute("SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name=? AND place.kinds=? AND place.name Like '%%'",(cityName,endpoint) )
+            row = cur.fetchall() 
 
-    if cityName == '':
-        return HttpResponse(status=200)
-    else:
+            for places in row:
+                print(row)
+                city={}
+                city['id']=places[0]
+                city['name']=places[1].decode('UTF8')
+                city['rate']=places[2]
+                city['kinds']=places[3]
+                city['wikidata'] = places[4]
+                city['point']={
+                    'lon':places[6],
+                    'lat':places[7]
+                            }
+                city['img']=places[8]
+
+                cities['data'].append(city)
+
+                count+=1
+            print(cities)
+        
+            return JsonResponse(cities)
+    
+    if search!='':
         count = 0
         places=cur.execute("SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name=? AND place.kinds=? AND place.name Like ? || '%'",(cityName,endpoint,search) )
         row = cur.fetchall() 
         for places in row:
-
             city={}
             city['id']=places[0]
             city['name']=places[1].decode('UTF8')
@@ -638,19 +664,16 @@ def searchQueryView(request, cityName='',endpoint=''):
             city['point']={
                 'lon':places[6],
                 'lat':places[7]
-                           }
-            city['img']:places[8]
-
+                        }
+            city['img']=places[8]
             cities['data'].append(city)
-
             count+=1
-
-        inf = {}
-        inf['count'] = count
-        cities['metainf'].append(inf)
-        if(inf['count'] == 0):
-            return JsonResponse({'message': 'Szukane miejsce nie istnieje.'}, status=404)
+        print(cities)
+    
         return JsonResponse(cities)
+    
+    
+    return JsonResponse('',safe=False)
     
 @csrf_exempt 
 def changePlan(request):
