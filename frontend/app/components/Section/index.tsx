@@ -15,7 +15,7 @@ const Section = ({ city }: Props) => {
   const [data, setData] = useState<Place[]>([]);
   return (
     <div className="w-1/2 py-12 h-full form-control justify-center items-start gap-y-4">
-      <h1 className=" self-center text-xl font-bold">{city}</h1>
+      <h1 className=" self-center text-xl font-bold capitalize">{city}</h1>
       <QueryButtons city={city} set={setData} />
       <div className="scrollbar mt-4 grid w-full gap-4 p-10 overflow-y-auto overflow-x-hidden h-full">
         {data.map((place) => (

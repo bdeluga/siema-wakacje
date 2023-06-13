@@ -30,10 +30,10 @@ const Modal = () => {
     const fetchData = async () => {
       try {
         const response: Place[] = await fetch(
-          `${env.NEXT_PUBLIC_API_URL}/${city}/${queryKey}/?search=${search}`
+          `${env.NEXT_PUBLIC_API_URL}/city/${city}/${queryKey}/?search=${search}`
         ).then((res) => res.json());
 
-        setData(response);
+        setData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
