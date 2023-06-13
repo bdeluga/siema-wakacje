@@ -147,6 +147,8 @@ def placesResponseView(request, cityName, place):
     con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
     cur = con.cursor()
 
+    
+
 
     cityName = cityName.upper()
     sql_select_query = f"select * from city where name ='{cityName}'" 
@@ -619,58 +621,59 @@ def searchQueryView(request, cityName='',endpoint=''):
 
     cityName = cityName.upper()
     cities = { 'data': []}
-    print("XD")
     search=request.GET.get('search',)
-    if search==None:
-        if cityName == '':
-            return HttpResponse(status=200)
-        else:
-            count = 0
-            places=cur.execute("SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name=? AND place.kinds=? AND place.name Like '%%'",(cityName,endpoint) )
-            row = cur.fetchall() 
-
-            for places in row:
-                print(row)
-                city={}
-                city['id']=places[0]
-                city['name']=places[1].decode('UTF8')
-                city['rate']=places[2]
-                city['kinds']=places[3]
-                city['wikidata'] = places[4]
-                city['point']={
-                    'lon':places[6],
-                    'lat':places[7]
-                            }
-                city['img']=places[8]
-
-                cities['data'].append(city)
-
-                count+=1
-            print(cities)
+    count = 0
+    places=cur.execute("SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name=? AND place.kinds=? AND place.name Like ? || '%'",(cityName,endpoint,search) )
+    row = cur.fetchall() 
+    for places in row:
+        city={}
+        city['id']=places[0]
+        city['name']=places[1].decode('UTF8')
+        city['rate']=places[2]
+        city['kinds']=places[3]
+        city['wikidata'] = places[4]
+        city['point']={
+            'lon':places[6],
+            'lat':places[7]
+                    }
+        city['img']=places[8]
+        cities['data'].append(city)
+        count+=1
+    
         
-            return JsonResponse(cities)
+    return JsonResponse(cities)
     
-    if search!='':
-        count = 0
-        places=cur.execute("SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name=? AND place.kinds=? AND place.name Like ? || '%'",(cityName,endpoint,search) )
-        row = cur.fetchall() 
-        for places in row:
-            city={}
-            city['id']=places[0]
-            city['name']=places[1].decode('UTF8')
-            city['rate']=places[2]
-            city['kinds']=places[3]
-            city['wikidata'] = places[4]
-            city['point']={
-                'lon':places[6],
-                'lat':places[7]
-                        }
-            city['img']=places[8]
-            cities['data'].append(city)
-            count+=1
-        print(cities)
+    # if search==None:
+    #     print("XD")
+    #     if cityName == '':
+    #         return HttpResponse(status=200)
+    #     else:
+    #         count = 0
+    #         places=cur.execute("SELECT * FROM place INNER JOIN city on city.cityid=place.cityid WHERE city.name=? AND place.kinds=? AND place.name Like '%%'",(cityName,endpoint) )
+    #         row = cur.fetchall() 
+
+    #         for places in row:
+    #             print(row)
+    #             city={}
+    #             city['id']=places[0]
+    #             city['name']=places[1].decode('UTF8')
+    #             city['rate']=places[2]
+    #             city['kinds']=places[3]
+    #             city['wikidata'] = places[4]
+    #             city['point']={
+    #                 'lon':places[6],
+    #                 'lat':places[7]
+    #                         }
+    #             city['img']=places[8]
+
+    #             cities['data'].append(city)
+
+    #             count+=1
+    #         print(cities)
+        
+    #         return JsonResponse(cities)
     
-        return JsonResponse(cities)
+    
     
     
     return JsonResponse('',safe=False)
