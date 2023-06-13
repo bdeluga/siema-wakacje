@@ -1,4 +1,5 @@
-GET http://127.0.0.1:8000/city/szczecin/hotels/
+GET http://127.0.0.1:8000/city/gdynia/night_life/?search=
+
 content-type: application/json
 
 {    
