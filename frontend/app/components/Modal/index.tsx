@@ -32,7 +32,7 @@ const Modal = () => {
         const response: Place[] = await fetch(
           `${env.NEXT_PUBLIC_API_URL}/city/${city}/${queryKey}/?search=${search}`
         ).then((res) => res.json());
-
+        //@ts-expect-error BE fault
         setData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -48,7 +48,7 @@ const Modal = () => {
   const handleSend = async () => {
     await fetch(`${env.NEXT_PUBLIC_API_URL}/plan/confirm`, {
       method: "POST",
-      //@ts-ignore will handle it
+
       body: JSON.stringify({
         id: session?.user.id,
         name: list.name,

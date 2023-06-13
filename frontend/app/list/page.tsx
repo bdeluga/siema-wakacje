@@ -3,6 +3,7 @@ import React from "react";
 import { env } from "~/env.mjs";
 import { authOptions } from "~/lib/auth";
 import { Place } from "../utils/types";
+import Link from "next/link";
 
 const Page = async () => {
   const session = await getServerSession(authOptions);
@@ -16,7 +17,11 @@ const Page = async () => {
         {!res.length ? (
           <p className="text-4xl text-bold">Brak zapisanych list.</p>
         ) : (
-          res.map((list) => <div key={list.id}>{list.name}</div>)
+          res.map((list) => (
+            <Link href={`list/${list.id}`} key={list.id}>
+              {list.name}
+            </Link>
+          ))
         )}
       </div>
     </div>
