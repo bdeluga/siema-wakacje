@@ -19,7 +19,7 @@ const QueryButtons = ({ city, set }: Props) => {
     const fetchData = async () => {
       try {
         const response: Place[] = await fetch(
-          `${env.NEXT_PUBLIC_API_URL}/${city}/${queryKey}`
+          `${env.NEXT_PUBLIC_API_URL}/${city}/${queryKey}?search=""`
         ).then((res) => res.json());
         set(response);
         //@ts-expect-error

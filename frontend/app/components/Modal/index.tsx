@@ -30,10 +30,10 @@ const Modal = () => {
     const fetchData = async () => {
       try {
         const response: Place[] = await fetch(
-          `${env.NEXT_PUBLIC_API_URL}/city/${city}/${queryKey}/${search}`
+          `${env.NEXT_PUBLIC_API_URL}/${city}/${queryKey}/?search=${search}`
         ).then((res) => res.json());
 
-        setData(response.data);
+        setData(response);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -139,6 +139,7 @@ const Modal = () => {
                 type="text"
                 placeholder="Search…"
                 className="input input-bordered"
+                onChange={(e) => setSearch(e.target.value)}
               />
 
               <button className="btn btn-square">
