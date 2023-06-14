@@ -1,5 +1,5 @@
-GET http://127.0.0.1:8000/city/gdynia/night_life/?search=
-
+GET http://127.0.0.1:8000/plan/showall/?id=1e814aef-1df4-4a3e-91e8-711f7b1745b1
+# c99c7aff-8ce7-4775-b261-bc130635dd9b
 content-type: application/json
 
 {    

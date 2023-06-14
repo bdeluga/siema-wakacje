@@ -558,11 +558,14 @@ def cityShowList(request):
     print(id)
     sql_select_query=cur.execute(sql_select_query)
     sql_select_query = cur.fetchall() 
+    print("funk",sql_select_query)
     # Dobra tu zoribc tablice z querry sqlite zamiast r=
     # text = sql_select_query.split(',')
     # print(text)
-    print(sql_select_query)
     result=[]
+    if sql_select_query==[]:
+        return JsonResponse(result,safe=False)
+
     if not sql_select_query:
         return HttpResponse(status=422)
     for i in sql_select_query:
@@ -597,13 +600,14 @@ def cityShowOneList(request):
     sql_select_query = f"select id, name, data from list where id ='{responseId}'" 
     sql_select_query=cur.execute(sql_select_query)
     sql_select_query = cur.fetchone()
+    print(sql_select_query)
     # print(sql_select_query) 
     if sql_select_query==None:
-        return HttpResponse(status=422)
+        return JsonResponse("[]",safe=False)
     # Dobra tu zoribc tablice z querry sqlite zamiast r=
     # text = sql_select_query.split(',')
     # print(text)
-    print(sql_select_query[2])
+    # print(sql_select_query[2])
     
     r={
             'id': sql_select_query[0],
