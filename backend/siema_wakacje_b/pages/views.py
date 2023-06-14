@@ -710,8 +710,7 @@ def changePlan(request):
 def removePlan(request):
     if request.method != "DELETE":
         return HttpResponse(status=404)
-    if request.body==None:
-        return HttpResponse(status=422)
+
 
     con = sqlite3.connect(os.path.join(settings.DB_DIR,'Project.db'))
     cur = con.cursor()
