@@ -250,7 +250,7 @@ const Modal = () => {
                     <div className="form-control h-full justify-between">
                       <Rating rating={place.rate} />
                       <span className="btn">brak ceny</span>
-                    </div>{" "}
+                    </div>
                   </>
                 )}
               </button>
